@@ -1,0 +1,55 @@
+{
+  "name": "trpg-organizer",
+  "version": "0.1.0",
+  "description": "TRPG Organizer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis",
+    "publish": "electron-builder --win nsis --publish always"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "pub.naru.trpgorganizer",
+    "productName": "TRPG Organizer",
+    "files": [
+      "main.js",
+      "preload.js",
+      "chat-sender.js",
+      "updater.js",
+      "index.html",
+      "subview-notepad.html",
+      "assets/**",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/cherries.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "extraResources": [
+      "win-bridge.ps1"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "OHgolgyeo",
+        "repo": "TRPG-Organizer"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OHgolgyeo/TRPG-Organizer.git"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  }
+}
