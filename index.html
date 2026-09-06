@@ -1104,15 +1104,20 @@ html, body {
 @font-face { font-family:'BookkGothic'; src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkGothic-Lt.woff2') format('woff2'); font-weight:300; font-display:swap; }
 #roll20-notepad-mock { font-family:'Pretendard','Noto Sans KR',sans-serif; color: light-dark(#26222b,#f5f1fa); padding: 10px; }
 #roll20-notepad-mock .organizer-window { position:relative; background: light-dark(#fbf9fd,#1c1922); border: 1px solid light-dark(#d6cfdd,#5b5366); border-radius: 12px; box-shadow: 0 14px 45px light-dark(#392d4b22,#00000066); overflow:visible; max-width:920px; margin:0 auto; container-type:inline-size; }
-#roll20-notepad-mock .organizer-titlebar { height: 38px; display:flex; align-items:center; gap:8px; padding:0 10px 0 14px; background:light-dark(#eee8f2,#29242f); user-select:none; border-radius:12px 12px 0 0; }
+#roll20-notepad-mock .organizer-titlebar { height: 38px; display:flex; align-items:center; gap:8px; padding:0 10px; background:light-dark(#eee8f2,#29242f); user-select:none; border-radius:12px 12px 0 0; }
 #roll20-notepad-mock .organizer-titlebar strong.app-title { font-weight:500; flex:0 0 auto; min-width:0; display:flex; align-items:baseline; gap:4px; line-height:1.15; }
 #roll20-notepad-mock .organizer-titlebar strong.app-title { cursor:pointer; outline:none; box-shadow:none; }
 #roll20-notepad-mock .organizer-titlebar strong.app-title:focus, #roll20-notepad-mock .organizer-titlebar strong.app-title:focus-visible { outline:none; box-shadow:none; }
-#roll20-notepad-mock .organizer-titlebar > .ph-cherries { color:var(--accent,#e46f68); font-size:18px; }
+#roll20-notepad-mock .organizer-titlebar > .ph-cherries {
+ color:var(--accent,#e46f68);
+ font-size:18px;
+ cursor:pointer;
+ -webkit-app-region:no-drag;
+}
 #roll20-notepad-mock .title-file-menu { top:40px; left:14px; z-index:90; width:120px; min-width:120px !important; box-sizing:border-box; }
 #roll20-notepad-mock .title-file-menu button { display:block; width:100%; grid-template-columns:1fr !important; text-align:left; white-space:nowrap; }
 #roll20-notepad-mock .organizer-titlebar strong.app-title .title-sub { white-space:nowrap; }
-@container(max-width:440px){#roll20-notepad-mock .organizer-titlebar strong.app-title { flex-direction:column; align-items:flex-start; gap:0; line-height:1.05; } #roll20-notepad-mock .organizer-titlebar strong.app-title .title-sub { padding-left:13px; } #roll20-notepad-mock .organizer-titlebar { height:auto; min-height:38px; padding-top:5px; padding-bottom:5px; } }
+@container(max-width:440px){#roll20-notepad-mock .organizer-titlebar strong.app-title { flex-direction:column; align-items:flex-start; gap:0; line-height:1.05; } #roll20-notepad-mock .organizer-titlebar strong.app-title .title-sub { padding-left:13px; } #roll20-notepad-mock .organizer-titlebar { height:auto; min-height:38px; padding:5px 10px; } }
 #roll20-notepad-mock .organizer-titlebar button { border:0; background:transparent; color:inherit; min-width:32px; min-height:30px; cursor:pointer; }
 #roll20-notepad-mock .organizer-titlebar .window-action { width:30px; height:28px; min-width:30px; min-height:28px; display:inline-flex; align-items:center; justify-content:center; padding:0; margin-left:4px; border:0; background:none; color:#477a66; cursor:pointer; }
 #roll20-notepad-mock .organizer-titlebar .window-action i { font-size:14px; }
@@ -1129,22 +1134,127 @@ html, body {
 #roll20-notepad-mock .organizer-window.collapsed .organizer-body { display:none; }
 #roll20-notepad-mock .organizer-window.collapsed { height:auto !important; }
 #roll20-notepad-mock .organizer-window.collapsed .organizer-titlebar { border-radius:12px; }
-#roll20-notepad-mock .organizer-window { min-width:380px; display:flex; flex-direction:column; }
+#roll20-notepad-mock .organizer-window { min-width:360px; display:flex; flex-direction:column; }
 #roll20-notepad-mock .organizer-body { flex:1; min-height:0; display:flex; flex-direction:column; }
-#roll20-notepad-mock .organizer-paper { flex:1 1 320px; min-height:0; }
+#roll20-notepad-mock .organizer-paper { flex:1 1 auto; min-height:72px; }
+#roll20-notepad-mock .organizer-stylebar,
+#roll20-notepad-mock .organizer-status { flex:none; }
+#roll20-notepad-mock .organizer-body { overflow:hidden; }
 #roll20-notepad-mock .resize-handle { position:absolute; right:4px; bottom:3px; z-index:18; width:22px; height:22px; display:flex; align-items:center; justify-content:center; border:0; background:transparent; color:var(--theme-color,#58a783); cursor:nwse-resize; touch-action:none; }
 #roll20-notepad-mock .resize-handle:hover { color:var(--accent,#e46f68); }
 #roll20-notepad-mock .resize-handle i { font-size:18px; pointer-events:none; }
-#roll20-notepad-mock .organizer-toolbar { display:flex; align-items:center; gap:7px; flex-wrap:wrap; padding-bottom:10px; }
+#roll20-notepad-mock .organizer-toolbar { flex:none; display:flex; align-items:center; gap:7px; flex-wrap:nowrap; padding-bottom:10px; min-width:0; overflow:hidden; }
 #roll20-notepad-mock .organizer-toolbar .mode { display:flex; padding:3px; border-radius:8px; background:light-dark(#ebe6ef,#26222c); }
-#roll20-notepad-mock .organizer-toolbar .mode { gap:6px; padding:0; margin-right:4px; background:transparent !important; }
+#roll20-notepad-mock .organizer-toolbar .mode { display:flex; gap:6px; padding:0; margin-right:4px; background:transparent !important; flex:0 1 auto; min-width:0; }
+#roll20-notepad-mock .organizer-toolbar .mode button { flex:0 1 auto; min-width:0; white-space:nowrap; }
 #roll20-notepad-mock .find-bar button, #roll20-notepad-mock .organizer-toolbar button, #roll20-notepad-mock .organizer-stylebar button { border:1px solid light-dark(#d7cfdf,#4c4557); background:light-dark(#fff,#302b37); color:inherit; border-radius:7px; padding:6px 10px; cursor:pointer; }
 #roll20-notepad-mock .organizer-toolbar button[aria-pressed="true"], #roll20-notepad-mock .organizer-stylebar button[aria-pressed="true"] { color:#fff; background:#795fa8; border-color:#795fa8; }
-#roll20-notepad-mock .organizer-toolbar button[data-menu] { width:64px; height:34px; padding:0; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; }
+#roll20-notepad-mock .organizer-toolbar button[data-menu] { width:64px; min-width:0; height:34px; padding:0 7px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; white-space:nowrap; flex:0 1 64px; }
+#roll20-notepad-mock .organizer-toolbar button[data-menu="settings"] { width:42px; flex-basis:42px; }
 #roll20-notepad-mock .organizer-toolbar button[data-menu] svg { width:16px; height:16px; }
 #roll20-notepad-mock .organizer-toolbar button[data-menu="settings"] i { font-size:20px; line-height:1; }
 #roll20-notepad-mock .organizer-toolbar button[data-menu="settings"][aria-pressed="true"] i { color:#ffffff !important; }
-#roll20-notepad-mock .organizer-toolbar .spacer { flex:1; }
+#roll20-notepad-mock .organizer-toolbar .spacer {
+  flex:1 1 auto;
+  min-width:8px;
+  width:auto;
+  height:auto;
+  margin:0;
+  background:transparent;
+  opacity:1;
+}
+
+/* 창이 좁아졌을 때: 상단 버튼 크기와 간격을 완전히 통일 */
+@container (max-width:440px){
+  #roll20-notepad-mock .organizer-toolbar {
+    gap:4px !important;
+  }
+
+  #roll20-notepad-mock .organizer-toolbar .mode {
+    display:flex;
+    flex:0 0 auto !important;
+    gap:4px !important;
+    margin-right:0 !important;
+    padding:0 !important;
+    min-width:0;
+  }
+
+  #roll20-notepad-mock .organizer-toolbar button {
+    box-sizing:border-box !important;
+    width:46px !important;
+    min-width:46px !important;
+    max-width:46px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    flex:0 0 46px !important;
+    margin:0 !important;
+    padding:0 3px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  /* 남는 폭은 가운데가 차지해서 오른쪽 그룹을 끝으로 밀어냅니다. */
+  #roll20-notepad-mock .organizer-toolbar .spacer {
+    display:block;
+    position:relative;
+    flex:1 1 auto !important;
+    min-width:9px !important;
+    width:auto !important;
+    max-width:none !important;
+    height:22px;
+    margin:0 2px !important;
+    background:transparent;
+    opacity:1;
+  }
+  /* 좁은 창에서만 보이는 그룹 구분선 */
+  #roll20-notepad-mock .organizer-toolbar .spacer::after {
+    content:"";
+    position:absolute;
+    right:0;
+    top:50%;
+    width:1px;
+    height:22px;
+    transform:translateY(-50%);
+    background:color-mix(in srgb,currentColor 22%,transparent);
+    opacity:.75;
+  }
+}
+
+@container (max-width:390px){
+  #roll20-notepad-mock .organizer-toolbar {
+    gap:4px !important;
+  }
+
+  #roll20-notepad-mock .organizer-toolbar .mode {
+    gap:4px !important;
+  }
+
+  /* 최소 창 폭에서는 7개 버튼 모두 정확히 같은 42 × 34px */
+  #roll20-notepad-mock .organizer-toolbar button {
+    width:42px !important;
+    min-width:42px !important;
+    max-width:42px !important;
+    height:34px !important;
+    min-height:34px !important;
+    max-height:34px !important;
+    flex:0 0 42px !important;
+    padding:0 2px !important;
+    font-size:11px !important;
+  }
+
+  #roll20-notepad-mock .organizer-toolbar .spacer {
+    flex:1 1 auto !important;
+    min-width:7px !important;
+    width:auto !important;
+    max-width:none !important;
+    height:22px;
+    margin:0 2px !important;
+  }
+}
 #roll20-notepad-mock .organizer-paper { position:relative; display:grid; grid-template-columns:42px 1fr; border:1px solid light-dark(#d9d2df,#484150); border-radius:9px; overflow-y:auto; overflow-x:hidden; background:light-dark(#fff,#211e26); scrollbar-width:thin; scrollbar-color:color-mix(in srgb,var(--theme-color,#58a783) 55%,transparent) transparent; }
 #roll20-notepad-mock .organizer-paper::-webkit-scrollbar { width:8px; }
 #roll20-notepad-mock .organizer-paper::-webkit-scrollbar-track { background:transparent; }
@@ -1169,7 +1279,7 @@ html, body {
 #roll20-notepad-mock[data-theme="pastel"] .command-context { color:#3d6255; background:#fffef9; border-color:#bddfca; }
 #roll20-notepad-mock[data-theme="pink"] .command-context { color:#765160; background:#fffefe; border-color:#efcbd9; }
 #roll20-notepad-mock[data-theme="blue"] .command-context { color:#466577; background:#fefeff; border-color:#bedce9; }
-#roll20-notepad-mock .organizer-editor { outline:none; padding:13px 16px; white-space:pre-wrap; line-height:31px; min-height:0; font-family:inherit; }
+#roll20-notepad-mock .organizer-editor { outline:none; padding:13px 16px; white-space:pre-wrap; line-height:31px; min-height:0; font-family:inherit; word-break:keep-all; overflow-wrap:break-word; }
 #roll20-notepad-mock .organizer-editor .styled { background:light-dark(#eee5fa,#453752); border-radius:3px; padding:1px 2px; }
 #roll20-notepad-mock .organizer-editor .multi-select-mark { background:color-mix(in srgb,var(--accent,#e46f68) 20%,transparent); outline:1px dashed var(--accent,#e46f68); outline-offset:-1px; border-radius:3px; }
 #roll20-notepad-mock .organizer-editor .custom-font { font-family:"Batang","Times New Roman",serif; font-weight:500; }
@@ -1215,7 +1325,7 @@ html, body {
 #roll20-notepad-mock .style-editor-float h3 { margin:0 0 11px; font-size:14px; font-weight:500; }
 #roll20-notepad-mock .style-editor-float label { display:block; margin:8px 0 4px; font-size:12px; }
 #roll20-notepad-mock .style-editor-float input[type="text"], #roll20-notepad-mock .style-editor-float textarea { width:100%; box-sizing:border-box; border:1px solid light-dark(#d7d0dc,#83718f); border-radius:6px; padding:7px; color:inherit; background:light-dark(#ffffff,#574a61); }
-#roll20-notepad-mock .style-editor-float textarea { min-height:86px; resize:vertical; }
+#roll20-notepad-mock .style-editor-float textarea { min-height:86px; resize:vertical; white-space:pre-wrap; word-break:keep-all; overflow-wrap:break-word; }
 #roll20-notepad-mock .parsed-style-heading { display:flex; align-items:center; justify-content:space-between; margin-top:9px; font-size:12px; }
 #roll20-notepad-mock .parsed-style-heading span { opacity:.7; }
 #roll20-notepad-mock .parsed-style-list { display:grid; gap:5px; margin-top:5px; }
@@ -1422,7 +1532,7 @@ html, body {
    </div>
    <section class="organizer-menu-panel" id="menu-commands" aria-label="채팅 명령어 관리"><h3>채팅 명령어</h3><div id="command-list"><div class="organizer-menu-row" data-command-row="/desc "><code>/desc </code><span>✷</span><button type="button" data-edit-command="/desc ">수정</button></div></div><div class="command-menu-actions"><button type="button" id="add-command">＋ 명령어 추가</button><button type="button" id="edit-command-list" aria-pressed="false">편집</button></div></section>
      <section class="organizer-menu-panel" id="menu-styles" aria-label="스타일 관리"><h3>채팅 스타일</h3><div class="style-menu-actions"><button type="button" id="add-style">＋ 스타일 추가</button><button type="button" class="style-vault-button" id="open-style-vault"><i class="ph ph-archive" aria-hidden="true"></i><span>보관함</span></button></div></section>
-   <section class="organizer-menu-panel" id="menu-settings" aria-label="환경설정"><h3>환경설정</h3><div class="organizer-menu-row"><label for="mock-theme">색상 모드</label><div class="dropdown" id="mock-theme"><button type="button" class="dropdown-trigger" id="mock-theme-trigger" aria-haspopup="listbox" aria-expanded="false">메론소다</button><ul class="dropdown-list" role="listbox"><li role="option" data-value="light">밝음</li><li role="option" data-value="dark">어두움</li><li role="option" data-value="pastel" aria-selected="true">메론소다</li><li role="option" data-value="pink">딸기소다</li><li role="option" data-value="blue">블루소다</li></ul></div></div><div class="organizer-menu-row"><label for="mock-font">기본 표시 글꼴</label><div class="dropdown" id="mock-font"><button type="button" class="dropdown-trigger" id="mock-font-trigger" aria-haspopup="listbox" aria-expanded="false">Pretendard</button><ul class="dropdown-list" role="listbox"><li role="option" data-value="Pretendard" aria-selected="true">Pretendard</li><li role="option" data-value="Noto Sans KR">Noto Sans KR</li><li role="option" data-value="Noto Serif KR">Noto Serif KR</li><li role="option" data-value="BookkGothic">BookkGothic</li><li role="option" data-value="BookkMyungjo">BookkMyungjo</li></ul></div></div><div class="organizer-menu-row"><label for="mock-style-preview">적용 스타일 표시</label><div class="dropdown" id="mock-style-preview"><button type="button" class="dropdown-trigger" id="mock-style-preview-trigger" aria-haspopup="listbox" aria-expanded="false">숨기기</button><ul class="dropdown-list" role="listbox"><li role="option" data-value="hidden" aria-selected="true">숨기기</li><li role="option" data-value="visible">표시하기</li></ul></div></div><div class="organizer-menu-row storage-row"><input type="text" id="save-file-name-inline" value="roll20-organizer.json" aria-label="저장할 파일 이름"><button type="button" id="choose-save-location">저장</button></div><div class="organizer-menu-row storage-row"><code class="storage-location" id="loaded-file-name">선택한 파일 없음</code><button type="button" id="choose-import-file">열기</button><input type="file" id="import-file" accept=".json"></div><div class="organizer-menu-row settings-danger-row"><button type="button" id="settings-backup">백업하기</button><button type="button" id="settings-clear-text">글 삭제</button><button type="button" id="settings-restore">복원하기</button><input type="file" id="settings-restore-file" accept=".json"></div></section>
+   <section class="organizer-menu-panel" id="menu-settings" aria-label="환경설정"><h3>환경설정</h3><div class="organizer-menu-row"><label for="mock-theme">색상 테마</label><div class="dropdown" id="mock-theme"><button type="button" class="dropdown-trigger" id="mock-theme-trigger" aria-haspopup="listbox" aria-expanded="false">메론소다</button><ul class="dropdown-list" role="listbox"><li role="option" data-value="light">밝음</li><li role="option" data-value="dark">어두움</li><li role="option" data-value="pastel" aria-selected="true">메론소다</li><li role="option" data-value="pink">딸기소다</li><li role="option" data-value="blue">블루소다</li></ul></div></div><div class="organizer-menu-row"><label for="mock-font">글꼴</label><div class="dropdown" id="mock-font"><button type="button" class="dropdown-trigger" id="mock-font-trigger" aria-haspopup="listbox" aria-expanded="false">Pretendard</button><ul class="dropdown-list" role="listbox"><li role="option" data-value="Pretendard" aria-selected="true">Pretendard</li><li role="option" data-value="Noto Sans KR">Noto Sans KR</li><li role="option" data-value="Noto Serif KR">Noto Serif KR</li><li role="option" data-value="BookkGothic">BookkGothic</li><li role="option" data-value="BookkMyungjo">BookkMyungjo</li></ul></div></div><div class="organizer-menu-row"><label for="mock-style-preview">스타일 뷰어</label><div class="dropdown" id="mock-style-preview"><button type="button" class="dropdown-trigger" id="mock-style-preview-trigger" aria-haspopup="listbox" aria-expanded="false">숨기기</button><ul class="dropdown-list" role="listbox"><li role="option" data-value="hidden" aria-selected="true">숨기기</li><li role="option" data-value="visible">표시하기</li></ul></div></div><div class="organizer-menu-row storage-row"><input type="text" id="save-file-name-inline" value="" aria-label="저장할 파일 이름"><button type="button" id="choose-save-location">저장</button></div><div class="organizer-menu-row storage-row"><code class="storage-location" id="loaded-file-name">선택한 파일 없음</code><button type="button" id="choose-import-file">열기</button><input type="file" id="import-file" accept=".json"></div><div class="organizer-menu-row settings-danger-row"><button type="button" id="settings-backup">백업하기</button><button type="button" id="settings-clear-text">글 삭제</button><button type="button" id="settings-restore">복원하기</button><input type="file" id="settings-restore-file" accept=".json"></div></section>
    <div class="organizer-paper" id="mock-paper">
     <aside class="organizer-gutter" aria-label="줄별 채팅 명령어"><button type="button" data-row="1" data-command="none" aria-label="첫째 줄 명령어 없음">·</button></aside>
     <div class="organizer-editor" id="mock-editor" contenteditable="true" role="textbox" aria-multiline="true" lang="ko-KR" inputmode="text" spellcheck="false"><div><br></div></div>
@@ -1445,11 +1555,149 @@ const mockBody=document.getElementById('mock-body');
 const mockPaper=document.getElementById('mock-paper');
 const mockEditor=document.getElementById('mock-editor');
 const mockStatus=document.getElementById('mock-status');
+
+function editorHasUserText(){
+  return (mockEditor.innerText || '').trim().length > 0;
+}
+
+function writePlainTextToEditor(text){
+  mockEditor.replaceChildren();
+  const lines = String(text || '').replace(/\r\n?/g, '\n').split('\n');
+
+  lines.forEach(lineText => {
+    const line = document.createElement('div');
+    if (lineText.length) line.textContent = lineText;
+    else line.innerHTML = '<br>';
+    mockEditor.append(line);
+  });
+
+  if (!mockEditor.children.length) {
+    const line = document.createElement('div');
+    line.innerHTML = '<br>';
+    mockEditor.append(line);
+  }
+
+  if (typeof syncGutterLines === 'function') {
+    try { syncGutterLines(); } catch {}
+  }
+
+  mockEditor.scrollTop = 0;
+  mockEditor.focus();
+}
+
+async function runUiScanIntoEditor(){
+  if (editorHasUserText()) {
+    const overwrite = window.confirm(
+      '현재 입력창의 내용을 진단 결과로 바꿀까요?\n\n' +
+      '필요한 글이 있다면 먼저 저장하거나 복사해 주세요.'
+    );
+    if (!overwrite) return;
+  }
+
+  mockStatus.textContent = '입력창 자동 탐색 중…';
+
+  let result;
+  try {
+    result = await window.roll20Native?.scanUi?.();
+  } catch (err) {
+    result = {
+      ok:false,
+      report:
+        'TRPG Organizer - UI Automation 입력창 탐색 결과\n' +
+        '상태: 탐색 호출 실패\n' +
+        '오류: ' + (err?.message || String(err))
+    };
+  }
+
+  const report = result?.report || (
+    'TRPG Organizer - UI Automation 입력창 탐색 결과\n' +
+    '상태: 결과를 받지 못했습니다.'
+  );
+
+  setMockMode('edit');
+  writePlainTextToEditor(report);
+
+  mockStatus.textContent = result?.ok
+    ? `자동 탐색 완료 · 후보 ${result.candidateCount ?? 0}개`
+    : '자동 탐색 실패 · 입력창의 진단 내용을 복사해 보내주세요.';
+}
+
+async function runUiFocusIntoEditor(){
+  if (editorHasUserText()) {
+    const overwrite = window.confirm(
+      '현재 입력창의 내용을 포커스 테스트 결과로 바꿀까요?\n\n' +
+      '필요한 글이 있다면 먼저 저장하거나 복사해 주세요.'
+    );
+    if (!overwrite) return;
+  }
+
+
+  let result;
+  try {
+    result = await window.roll20Native?.focusUi?.();
+  } catch (err) {
+    result = {
+      ok:false,
+      report:
+        '상태: 테스트 호출 실패\n' +
+        '오류: ' + (err?.message || String(err))
+    };
+  }
+
+  const report = result?.report || (
+    '상태: 결과를 받지 못했습니다.'
+  );
+
+  setMockMode('edit');
+  writePlainTextToEditor(report);
+
+  mockStatus.textContent = result?.ok
+}
+
+
+async function runUiInputTestIntoEditor(){
+  if (editorHasUserText()) {
+    const overwrite = window.confirm(
+      '현재 입력창의 내용을 입력 테스트 결과로 바꿀까요?\n\n' +
+      '필요한 글이 있다면 먼저 저장하거나 복사해 주세요.'
+    );
+    if (!overwrite) return;
+  }
+
+
+  let result;
+  try {
+    result = await window.roll20Native?.inputUiTest?.();
+  } catch (err) {
+    result = {
+      ok:false,
+      report:
+        'TRPG Organizer - UI Automation 입력 테스트\n' +
+        '상태: 테스트 호출 실패\n' +
+        '전송: 하지 않음\n' +
+        '오류: ' + (err?.message || String(err))
+    };
+  }
+
+  const report = result?.report || (
+    'TRPG Organizer - UI Automation 입력 테스트\n' +
+    '상태: 결과를 받지 못했습니다.\n' +
+    '전송: 하지 않음'
+  );
+
+  setMockMode('edit');
+  writePlainTextToEditor(report);
+
+  mockStatus.textContent = result?.ok
+    ? '입력 테스트 완료 · 대상 채팅창의 테스트 문구를 확인해주세요.'
+    : '입력 테스트 실패 · 입력창의 진단 내용을 복사해 보내주세요.';
+}
+
 const mockEdit=document.getElementById('mock-edit');
 const mockCopy=document.getElementById('mock-copy');
 let mockMode='edit';
 mockEditor.addEventListener('focus',()=>setTimeout(()=>window.roll20Native?.preferKorean?.(),80),{once:true});
-function setMockMode(mode){mockMode=mode;const copy=mode==='copy';if(copy)normalizeEditorStructure();mockEdit.setAttribute('aria-pressed',String(!copy));mockCopy.setAttribute('aria-pressed',String(copy));mockEditor.contentEditable=String(!copy);mockPaper.classList.toggle('copy',copy);multiSelectToggle.disabled=copy;gutter.inert=copy;gutter.setAttribute('aria-disabled',String(copy));if(copy&&multiSelectMode)disableMultiSelect(true);if(copy){commandContext.classList.remove('open');styleContext.classList.remove('open');getGutterButtons().forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});}renderMockDesign();mockStatus.textContent=copy?'복사 모드 · 문장을 선택하면 Roll20 채팅으로 전송됩니다.':'편집 모드 · 텍스트를 드래그해 스타일을 적용할 수 있습니다.';}
+function setMockMode(mode){mockMode=mode;const copy=mode==='copy';if(copy)normalizeEditorStructure();mockEdit.setAttribute('aria-pressed',String(!copy));mockCopy.setAttribute('aria-pressed',String(copy));mockEditor.contentEditable=String(!copy);mockPaper.classList.toggle('copy',copy);multiSelectToggle.disabled=copy;gutter.inert=copy;gutter.setAttribute('aria-disabled',String(copy));if(copy&&multiSelectMode)disableMultiSelect(true);if(copy){commandContext.classList.remove('open');styleContext.classList.remove('open');getGutterButtons().forEach(button=>{button.classList.remove('selected');button.setAttribute('aria-pressed','false');});}renderMockDesign();mockStatus.textContent=copy?'복사 모드 · 문장을 선택하면 지정된 채팅 입력창으로 전송됩니다.':'편집 모드 · 텍스트를 드래그해 스타일을 적용할 수 있습니다.';}
 mockEdit.addEventListener('click',()=>setMockMode('edit'));mockCopy.addEventListener('click',()=>setMockMode('copy'));
 document.getElementById('mock-pin').addEventListener('click',e=>{const active=e.currentTarget.getAttribute('aria-pressed')==='true';e.currentTarget.setAttribute('aria-pressed',String(!active));e.currentTarget.querySelector('i').className=active?'ph ph-caret-down':'ph ph-caret-double-up';renderMockDesign();mockStatus.textContent=active?'항상 위 고정을 해제했습니다.':'창을 항상 위에 고정합니다.';});
 const opacitySlider=document.getElementById('opacity-slider');
@@ -1514,7 +1762,8 @@ document.getElementById('mock-close').addEventListener('click',()=>{mockStatus.t
  document.addEventListener('selectionchange',()=>{const selection=getSelection();if(selection&&selection.rangeCount&&!selection.isCollapsed&&mockEditor.contains(selection.anchorNode)&&mockEditor.contains(selection.focusNode))lastEditorRange=selection.getRangeAt(0).cloneRange();});
   function applyStyle(name){const chosen=getEditorLines().filter(line=>line.classList.contains('style-selected'));if(chosen.length){chosen.forEach(line=>{line.dataset.chatStyle=name;line.classList.remove('style-selected');});mockStatus.textContent=`${chosen.length}개 문장에 ‘${name}’ 스타일을 적용했습니다.`;}else if(multiSelectMode&&multiSelectFragments.length){multiSelectFragments.forEach(mark=>{mark.classList.remove('multi-select-mark');mark.dataset.chatStyle=name;});mockStatus.textContent=`${multiSelectFragments.length}개 조각에 ‘${name}’ 스타일을 적용했습니다.`;multiSelectFragments=[];}else{const selection=getSelection();const liveRange=selection&&selection.rangeCount&&!selection.isCollapsed&&mockEditor.contains(selection.anchorNode)&&mockEditor.contains(selection.focusNode)?selection.getRangeAt(0):null;const range=liveRange||lastEditorRange;if(range&&range.startContainer.isConnected&&range.endContainer.isConnected){const spans=wrapEditorRange(range.cloneRange(),'styled',span=>{span.dataset.chatStyle=name;});selection?.removeAllRanges();lastEditorRange=null;mockStatus.textContent=spans.length>1?`${spans.length}개 문장에 걸쳐 선택한 글자에 ‘${name}’ 스타일을 적용했습니다.`:`선택한 글자에 ‘${name}’ 스타일을 적용했습니다.`;}else mockStatus.textContent='스타일을 적용할 글자를 드래그해 선택해 주세요.';}styleContext.classList.remove('open');renderMockDesign();}
  function unwrapChatStyle(node){const parent=node.parentNode;if(!parent)return;if(parent===mockEditor){node.removeAttribute('data-chat-style');node.removeAttribute('style');return;}while(node.firstChild)parent.insertBefore(node.firstChild,node);node.remove();parent.normalize&&parent.normalize();}
- function removeAppliedStyle(){const chosen=getEditorLines().filter(line=>line.classList.contains('style-selected'));if(chosen.length){chosen.forEach(line=>{line.removeAttribute('data-chat-style');line.removeAttribute('style');line.classList.remove('style-selected');line.querySelectorAll('[data-chat-style]').forEach(unwrapChatStyle);});mockStatus.textContent=`${chosen.length}개 문장의 스타일을 삭제했습니다.`;}else if(multiSelectMode&&multiSelectFragments.length){let count=0;multiSelectFragments.forEach(mark=>{[...mark.querySelectorAll('[data-chat-style]')].reverse().forEach(node=>{unwrapChatStyle(node);count++;});unwrapMultiSelectMark(mark);});multiSelectFragments=[];mockStatus.textContent=count?'선택한 조각의 스타일을 삭제했습니다.':'선택한 조각에는 삭제할 스타일이 없습니다.';}else{const selection=getSelection();if(selection&&selection.rangeCount&&!selection.isCollapsed&&mockEditor.contains(selection.anchorNode)&&mockEditor.contains(selection.focusNode)){const range=selection.getRangeAt(0);const targets=[...mockEditor.querySelectorAll('[data-chat-style]')].filter(node=>{try{return range.intersectsNode(node);}catch{return false;}}).reverse();targets.forEach(unwrapChatStyle);selection.removeAllRanges();mockStatus.textContent=targets.length?'선택한 글자의 스타일을 삭제했습니다.':'선택한 글자에는 삭제할 스타일이 없습니다.';}else mockStatus.textContent='스타일을 삭제할 글자나 문장을 먼저 선택해 주세요.';}styleContext.classList.remove('open');renderMockDesign();}
+ function removeStyleFromRange(range){if(!range||range.collapsed)return 0;const targets=[...mockEditor.querySelectorAll('[data-chat-style]')].filter(node=>{try{return range.intersectsNode(node);}catch{return false;}});let count=0;targets.forEach(node=>{const nodeRange=document.createRange();nodeRange.selectNodeContents(node);const startsBeforeNode=range.compareBoundaryPoints(Range.START_TO_START,nodeRange)<=0;const endsAfterNode=range.compareBoundaryPoints(Range.END_TO_END,nodeRange)>=0;if(startsBeforeNode&&endsAfterNode){unwrapChatStyle(node);count++;return;}const intersection=document.createRange();try{if(range.compareBoundaryPoints(Range.START_TO_START,nodeRange)>0)intersection.setStart(range.startContainer,range.startOffset);else intersection.setStart(nodeRange.startContainer,nodeRange.startOffset);if(range.compareBoundaryPoints(Range.END_TO_END,nodeRange)<0)intersection.setEnd(range.endContainer,range.endOffset);else intersection.setEnd(nodeRange.endContainer,nodeRange.endOffset);if(intersection.collapsed)return;const fragment=intersection.extractContents();const holder=document.createDocumentFragment();while(fragment.firstChild)holder.append(fragment.firstChild);intersection.insertNode(holder);if(!node.textContent)node.remove();count++;}catch{}});mockEditor.normalize();return count;}
+ function removeAppliedStyle(){const chosen=getEditorLines().filter(line=>line.classList.contains('style-selected'));if(chosen.length){chosen.forEach(line=>{line.removeAttribute('data-chat-style');line.removeAttribute('style');line.classList.remove('style-selected');[...line.querySelectorAll('[data-chat-style]')].reverse().forEach(unwrapChatStyle);});mockStatus.textContent=`${chosen.length}개 문장의 스타일을 삭제했습니다.`;}else if(multiSelectMode&&multiSelectFragments.length){let count=0;multiSelectFragments.forEach(mark=>{const r=document.createRange();r.selectNodeContents(mark);count+=removeStyleFromRange(r);unwrapMultiSelectMark(mark);});multiSelectFragments=[];mockStatus.textContent=count?'선택한 조각의 스타일을 삭제했습니다.':'선택한 조각에는 삭제할 스타일이 없습니다.';}else{const selection=getSelection();const liveRange=selection&&selection.rangeCount&&!selection.isCollapsed&&mockEditor.contains(selection.anchorNode)&&mockEditor.contains(selection.focusNode)?selection.getRangeAt(0):null;const range=liveRange||lastEditorRange;if(range&&range.startContainer.isConnected&&range.endContainer.isConnected){const count=removeStyleFromRange(range.cloneRange());selection?.removeAllRanges();lastEditorRange=null;mockStatus.textContent=count?'선택한 글자의 스타일을 삭제했습니다.':'선택한 글자에는 삭제할 스타일이 없습니다.';}else mockStatus.textContent='스타일을 삭제할 글자나 문장을 먼저 선택해 주세요.';}styleContext.classList.remove('open');renderMockDesign();}
  styleContext.addEventListener('pointerdown',e=>e.preventDefault());
  styleContext.addEventListener('click',e=>{const remove=e.target.closest('[data-style-remove]');if(remove){removeAppliedStyle();return;}const item=e.target.closest('[data-style-choice]');if(item)applyStyle(item.dataset.styleChoice);});
  function bindFavoriteStyles(){mockRoot.querySelectorAll('[data-style]').forEach(b=>{b.onpointerdown=e=>e.preventDefault();b.onclick=()=>applyStyle(b.dataset.style);});}
@@ -1563,18 +1812,12 @@ function expandHex(hex){const h=hex.replace('#','');return '#'+(h.length===3?h.s
    const triggerRect=menuTrigger?.getBoundingClientRect();
   const PAD=14;   // 패널 그림자가 잘리지 않도록 두는 여백
    let popup=null;
-   // 버튼 아래에 뜨도록, 트리거 버튼의 위치(뷰포트 기준)를 함께 넘깁니다.
-   // 실제 화면 좌표 계산은 main.js 에서 Electron 의 screen 모듈로 합니다 —
-   // 렌더러의 window.screenX / popup.screen 은 모니터마다 배율이 다르면
-   // 자주 어긋납니다 (여러 모니터 환경에서 엉뚱한 구석으로 튕겨나가던 원인).
    const posFeature=triggerRect
      ?`,rTop=${Math.round(triggerRect.top)},rLeft=${Math.round(triggerRect.left)},rWidth=${Math.round(triggerRect.width)},rBottom=${Math.round(triggerRect.bottom)}`
      :'';
    try{popup=window.open('about:blank',`roll20-panel-${panel.id}`,`popup=yes,width=${width+PAD*2},height=200${posFeature}`);}catch{}
    if(!popup){panel.classList.add('open');return false;}
   const doc=popup.document;
-  // 본 창의 스타일을 복제합니다. 다만 원본에는 창 전체를 칠하는 !important 규칙이 있어서,
-  // 아래 <style> 에서도 !important 로 덮어써야 배경이 투명해집니다.
   const sharedHead=[...document.querySelectorAll('style,link[rel="stylesheet"]')].map(node=>node.outerHTML).join('');
   doc.open();
   doc.write(`<!doctype html><html lang="ko"><head><meta charset="UTF-8"><base href="${document.baseURI}"><title>${panel.getAttribute('aria-label')||'TRPG Organizer'}</title>${sharedHead}<style>
@@ -1597,7 +1840,6 @@ function expandHex(hex){const h=hex.replace('#','');return '#'+(h.length===3?h.s
   doc.getElementById('detached-panel-host').append(panel);
   panel.classList.add('detached-panel','open');
     const state={popup,home,next,positioned:false,positionStarted:false,fit:null,observer:null};detachedPanelState.set(panel,state);
-  // 창을 패널 크기에 정확히 맞춥니다. 남는 영역이 있으면 투명해도 클릭을 가로막습니다.
   const fit=()=>{
     if(popup.closed)return;
      const rect=panel.getBoundingClientRect();
@@ -1670,7 +1912,7 @@ document.getElementById('discard-style').addEventListener('click',()=>{styleDirt
   if(e.key==='Home'||e.key==='End'){const target=e.key==='Home'?mockEditor.firstElementChild:mockEditor.lastElementChild;if(!target)return;e.preventDefault();const sel=getSelection();const range=document.createRange();range.selectNodeContents(target);range.collapse(e.key==='Home');sel.removeAllRanges();sel.addRange(range);mockPaper.scrollTop=e.key==='Home'?0:mockPaper.scrollHeight;return;}
  });
  function initDropdown(id,onChange){const root=document.getElementById(id);const trigger=root.querySelector('.dropdown-trigger');const list=root.querySelector('.dropdown-list');const options=[...root.querySelectorAll('[role="option"]')];const refit=()=>{const panel=root.closest('.detached-panel');const state=panel&&detachedPanelState.get(panel);if(state){state.observer.observe(list);state.popup.requestAnimationFrame(state.fit);}};const close=()=>{list.classList.remove('open');trigger.setAttribute('aria-expanded','false');refit();};const open=()=>{root.ownerDocument.querySelectorAll('.dropdown-list.open').forEach(openList=>{if(openList===list)return;openList.classList.remove('open');openList.closest('.dropdown')?.querySelector('.dropdown-trigger')?.setAttribute('aria-expanded','false');});list.classList.add('open');trigger.setAttribute('aria-expanded','true');refit();};trigger.addEventListener('click',()=>{list.classList.contains('open')?close():open();});options.forEach(opt=>opt.addEventListener('click',()=>{options.forEach(o=>o.removeAttribute('aria-selected'));opt.setAttribute('aria-selected','true');trigger.textContent=opt.textContent;close();onChange(opt.dataset.value);}));document.addEventListener('click',e=>{if(!root.contains(e.target))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});return {get value(){return options.find(o=>o.getAttribute('aria-selected')==='true')?.dataset.value;},set value(v){const opt=options.find(o=>o.dataset.value===v);if(opt){options.forEach(o=>o.removeAttribute('aria-selected'));opt.setAttribute('aria-selected','true');trigger.textContent=opt.textContent;}}};}
-const stylePreviewControl=document.getElementById('mock-style-preview');stylePreviewControl.classList.remove('dropdown');stylePreviewControl.innerHTML='<button type="button" id="style-preview-toggle" class="multi-select-toggle" aria-pressed="false" title="적용 스타일 표시"><i class="ph ph-brackets-square" aria-hidden="true"></i></button>';
+const stylePreviewControl=document.getElementById('mock-style-preview');stylePreviewControl.classList.remove('dropdown');stylePreviewControl.innerHTML='<button type="button" id="style-preview-toggle" class="multi-select-toggle" aria-pressed="false" title="스타일 뷰어"><i class="ph ph-brackets-square" aria-hidden="true"></i></button>';
 const stylePreviewToggle=document.getElementById('style-preview-toggle');
 const mockDesign={density:'compact',theme:'pastel',accent:'#e46f68',stylePreview:false};
 stylePreviewToggle.addEventListener('click',()=>{mockDesign.stylePreview=!mockDesign.stylePreview;stylePreviewToggle.setAttribute('aria-pressed',String(mockDesign.stylePreview));getEditorLines().forEach(repairEmptyStyleMarkers);renderMockDesign();mockStatus.textContent=mockDesign.stylePreview?'적용된 실제 스타일을 편집창에 표시합니다.':'버튼 색상으로 스타일 적용 위치를 표시합니다. Roll20 전송에는 실제 스타일이 포함됩니다.';});
@@ -1679,9 +1921,62 @@ stylePreviewToggle.addEventListener('click',()=>{mockDesign.stylePreview=!mockDe
  function vividColor(hex,satBoost,lightScale){hex=hex.replace('#','');const r=parseInt(hex.substring(0,2),16)/255,g=parseInt(hex.substring(2,4),16)/255,b=parseInt(hex.substring(4,6),16)/255;const max=Math.max(r,g,b),min=Math.min(r,g,b);let h=0,s=0;let l=(max+min)/2;if(max!==min){const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);if(max===r)h=(g-b)/d+(g<b?6:0);else if(max===g)h=(b-r)/d+2;else h=(r-g)/d+4;h/=6;}s=Math.min(1,s+satBoost);l=l*lightScale;function hue2rgb(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;}let r2,g2,b2;if(s===0){r2=g2=b2=l;}else{const q=l<0.5?l*(1+s):l+s-l*s;const p=2*l-q;r2=hue2rgb(p,q,h+1/3);g2=hue2rgb(p,q,h);b2=hue2rgb(p,q,h-1/3);}const toHex=v=>Math.round(Math.min(1,Math.max(0,v))*255).toString(16).padStart(2,'0');return '#'+toHex(r2)+toHex(g2)+toHex(b2);}
  function renderMockDesign(){mockRoot.dataset.density=mockDesign.density;mockRoot.dataset.theme=mockDesign.theme;const themeColors={dark:'#d1afe9',pastel:'#58a783',pink:'#d45f8b',blue:'#4d8da8',light:'#609bc5'};mockRoot.style.setProperty('--accent',mockDesign.accent);mockRoot.style.setProperty('--theme-color',themeColors[mockDesign.theme]);mockTheme.value=mockDesign.theme;mockRoot.querySelectorAll('.organizer-toolbar button, .organizer-stylebar button, .window-action').forEach(el=>{el.style.removeProperty('background');el.style.removeProperty('border-color');el.style.removeProperty('color');});mockRoot.querySelectorAll('[data-style]').forEach(el=>{el.style.background=mockStyleColors[el.dataset.style];el.style.borderColor=mockStyleColors[el.dataset.style];el.style.color='#554b40';});mockEditor.querySelectorAll('[data-chat-style]').forEach(el=>{el.classList.remove('styled');el.removeAttribute('style');if(mockDesign.stylePreview)el.style.cssText=normalizeStyleCss(mockStyleCss[el.dataset.chatStyle]||'');else{const highlight=mockStyleColors[el.dataset.chatStyle];if(highlight)el.style.backgroundColor=highlight;}});stylePreviewToggle.setAttribute('aria-pressed',String(mockDesign.stylePreview));mockRoot.querySelectorAll('.organizer-toolbar button[aria-pressed="true"], .organizer-stylebar button[aria-pressed="true"]').forEach(el=>{el.style.background=mockDesign.accent;el.style.borderColor=mockDesign.accent;el.style.color='#ffffff';});const settingsButton=mockRoot.querySelector('[data-menu="settings"]');if(settingsButton){const active=settingsButton.getAttribute('aria-pressed')==='true';const icon=settingsButton.querySelector('i');if(icon)icon.style.color=active?'#ffffff':themeColors[mockDesign.theme];}const pinBtn=mockRoot.querySelector('#mock-pin[aria-pressed="true"]');if(pinBtn)pinBtn.style.color=vividColor(mockDesign.accent,0.35,0.8);const appConfirmOkBtn=document.getElementById('app-confirm-ok');if(appConfirmOkBtn){const vivid=mockDesign.theme==='light'?'#e0403f':vividColor(mockDesign.accent,0.35,0.8);appConfirmOkBtn.style.background=vivid;appConfirmOkBtn.style.borderColor=vivid;}}
  function ensureJsonExtension(name){const trimmed=String(name||'').trim()||'roll20-organizer';return /\.json$/i.test(trimmed)?trimmed:`${trimmed}.json`;}
- const saveNameInput=document.getElementById('save-file-name-inline');const saveRow=saveNameInput.closest('.storage-row');const saveButton=document.getElementById('choose-save-location');const openButton=document.getElementById('choose-import-file');const openRow=openButton.closest('.storage-row');const backupButton=document.getElementById('settings-backup');const clearButton=document.getElementById('settings-clear-text');const credit=document.createElement('div');credit.className='settings-credit';credit.innerHTML='<a href="https://x.com/5golgyeo" id="creator-link">오골계</a><span>Roll20 Organizer v.1</span>';menuSettings.append(credit,document.getElementById('import-file'));saveRow.style.display='none';openRow.style.display='none';try{localStorage.removeItem('roll20-organizer-bareun-api-key');}catch{}const titleFileMenu=document.createElement('div');titleFileMenu.className='command-context title-file-menu';titleFileMenu.id='title-file-menu';titleFileMenu.setAttribute('role','menu');titleFileMenu.innerHTML='<button type="button" data-title-action="new">새 작업</button><button type="button" data-title-action="save">저장하기</button><button type="button" data-title-action="open">불러오기</button><button type="button" data-title-action="backup">설정 백업</button>';mockRoot.querySelector('.organizer-window').append(titleFileMenu);const appTitle=mockRoot.querySelector('.app-title');appTitle.setAttribute('role','button');appTitle.setAttribute('tabindex','0');appTitle.setAttribute('aria-expanded','false');const toggleTitleMenu=()=>{const open=!titleFileMenu.classList.contains('open');titleFileMenu.classList.toggle('open',open);appTitle.setAttribute('aria-expanded',String(open));};appTitle.addEventListener('click',toggleTitleMenu);appTitle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleTitleMenu();}});titleFileMenu.addEventListener('click',e=>{const action=e.target.closest('[data-title-action]')?.dataset.titleAction;if(!action)return;titleFileMenu.classList.remove('open');appTitle.setAttribute('aria-expanded','false');({new:clearButton,save:saveButton,open:openButton,backup:backupButton})[action]?.click();});document.addEventListener('click',e=>{if(!titleFileMenu.contains(e.target)&&!appTitle.contains(e.target)){titleFileMenu.classList.remove('open');appTitle.setAttribute('aria-expanded','false');}});document.getElementById('creator-link').addEventListener('click',e=>{e.preventDefault();window.roll20Native?.openExternal?.('https://x.com/5golgyeo');});
- document.getElementById('choose-save-location').addEventListener('click',async e=>{if(!window.roll20Native?.saveJson)return;e.stopImmediatePropagation();const name='roll20-organizer.json';const data={version:1,editorHtml:mockEditor.innerHTML,commands:mockCommands,lineCommands:getGutterButtons().map(b=>b.dataset.command),styleColors:mockStyleColors,styleCss:mockStyleCss,theme:mockDesign.theme,bookmarks:globalThis.roll20BookmarkTools?.export?.()||[]};const result=await window.roll20Native.saveJson(name,JSON.stringify(data,null,2));if(result?.ok)mockStatus.textContent=`‘${result.filename}’ 파일을 저장했습니다.`;else if(!result?.canceled)mockStatus.textContent='파일을 저장하지 못했습니다.';},true);
- document.getElementById('choose-save-location').addEventListener('click',async()=>{const data={version:1,editorHtml:mockEditor.innerHTML,commands:mockCommands,lineCommands:getGutterButtons().map(b=>b.dataset.command),styleColors:mockStyleColors,styleCss:mockStyleCss,theme:mockDesign.theme,bookmarks:globalThis.roll20BookmarkTools?.export?.()||[]};const name='roll20-organizer.json';const contents=JSON.stringify(data,null,2);if('showSaveFilePicker' in window){try{const handle=await window.showSaveFilePicker({suggestedName:name,types:[{description:'Roll20 Organizer 파일',accept:{'application/json':['.json']}}]});const writable=await handle.createWritable();await writable.write(contents);await writable.close();mockStatus.textContent=`‘${handle.name}’ 파일을 저장했습니다.`;}catch(error){if(error.name!=='AbortError')mockStatus.textContent='파일을 저장하지 못했습니다.';}return;}const blob=new Blob([contents],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);mockStatus.textContent=`‘${name}’ 파일을 저장했습니다.`;});
+ function localDateStamp(){
+  const now=new Date();
+  const y=now.getFullYear();
+  const m=String(now.getMonth()+1).padStart(2,'0');
+  const d=String(now.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+ }
+ function defaultDocumentFilename(){return `${localDateStamp()}.json`;}
+ function defaultSettingsFilename(){return `setting_${localDateStamp()}.json`;}
+ function collectLineComments(){
+  return getEditorLines().map(line=>{
+   const el=line.querySelector(':scope > .utility-line-comment');
+   if(!el)return null;
+   const body=el.querySelector('.utility-line-comment-body');
+   return body?.innerText ?? el.dataset.comment ?? '';
+  });
+ }
+ function collectDocumentData(){
+  let postitData={text:'',color:'#FFE66E',opacity:100,position:null};
+  try{
+   postitData={
+    text:typeof postitText!=='undefined'?postitText.value:(localStorage.getItem('roll20-organizer-postit')||''),
+    color:typeof postitColor!=='undefined'?postitColor:(localStorage.getItem('roll20-organizer-postit-color')||'#FFE66E'),
+    opacity:typeof postitOpacityValue!=='undefined'?postitOpacityValue:Number(localStorage.getItem('roll20-organizer-postit-opacity'))||100,
+    position:typeof postitSavedPosition!=='undefined'?postitSavedPosition:JSON.parse(localStorage.getItem('roll20-organizer-postit-position')||'null')
+   };
+  }catch{}
+  return{
+   version:2,
+   type:'document',
+   editorHtml:mockEditor.innerHTML,
+   bookmarks:globalThis.roll20BookmarkTools?.export?.()||[],
+   postit:postitData,
+   comments:collectLineComments(),
+   commands:{...mockCommands},
+   lineCommands:getGutterButtons().map(b=>b.dataset.command),
+   styleColors:{...mockStyleColors},
+   styleCss:{...mockStyleCss},
+   styleVault:JSON.parse(JSON.stringify(mockStyleVault||{})),
+   theme:mockDesign.theme
+  };
+ }
+ function collectSettingsData(){
+  return{
+   version:2,
+   type:'settings-backup',
+   commands:{...mockCommands},
+   styleColors:{...mockStyleColors},
+   styleCss:{...mockStyleCss},
+   styleVault:JSON.parse(JSON.stringify(mockStyleVault||{})),
+   subviews:globalThis.roll20SubviewStore?.export?.()||[]
+  };
+ }
+ const saveNameInput=document.getElementById('save-file-name-inline');const saveRow=saveNameInput.closest('.storage-row');const saveButton=document.getElementById('choose-save-location');const openButton=document.getElementById('choose-import-file');const openRow=openButton.closest('.storage-row');const backupButton=document.getElementById('settings-backup');const clearButton=document.getElementById('settings-clear-text');const credit=document.createElement('div');credit.className='settings-credit';credit.innerHTML='<a href="https://x.com/5golgyeo" id="creator-link">오골계</a><span>Roll20 Organizer v.1</span>';menuSettings.append(credit,document.getElementById('import-file'));saveRow.style.display='none';openRow.style.display='none';try{localStorage.removeItem('roll20-organizer-bareun-api-key');}catch{}const titleFileMenu=document.createElement('div');titleFileMenu.className='command-context title-file-menu';titleFileMenu.id='title-file-menu';titleFileMenu.setAttribute('role','menu');titleFileMenu.innerHTML='<button type="button" data-title-action="new">새 작업</button><button type="button" data-title-action="save">저장하기</button><button type="button" data-title-action="open">불러오기</button><button type="button" data-title-action="backup">설정 저장</button>';mockRoot.querySelector('.organizer-window').append(titleFileMenu);const appTitle=mockRoot.querySelector('.app-title');appTitle.setAttribute('role','button');appTitle.setAttribute('tabindex','0');appTitle.setAttribute('aria-expanded','false');const toggleTitleMenu=()=>{const open=!titleFileMenu.classList.contains('open');titleFileMenu.classList.toggle('open',open);appTitle.setAttribute('aria-expanded',String(open));};appTitle.addEventListener('click',toggleTitleMenu);appTitle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleTitleMenu();}});titleFileMenu.addEventListener('click',e=>{const action=e.target.closest('[data-title-action]')?.dataset.titleAction;if(!action)return;titleFileMenu.classList.remove('open');appTitle.setAttribute('aria-expanded','false');({new:clearButton,save:saveButton,open:openButton,backup:backupButton})[action]?.click();});document.addEventListener('click',e=>{if(!titleFileMenu.contains(e.target)&&!appTitle.contains(e.target)){titleFileMenu.classList.remove('open');appTitle.setAttribute('aria-expanded','false');}});document.getElementById('creator-link').addEventListener('click',e=>{e.preventDefault();window.roll20Native?.openExternal?.('https://x.com/5golgyeo');});
+ document.getElementById('choose-save-location').addEventListener('click',async e=>{if(!window.roll20Native?.saveJson)return;e.stopImmediatePropagation();const name=defaultDocumentFilename();const data=collectDocumentData();const result=await window.roll20Native.saveJson(name,JSON.stringify(data,null,2));if(result?.ok)mockStatus.textContent=`‘${result.filename}’ 파일을 저장했습니다.`;else if(!result?.canceled)mockStatus.textContent='파일을 저장하지 못했습니다.';},true);
+ document.getElementById('choose-save-location').addEventListener('click',async()=>{const data=collectDocumentData();const name=defaultDocumentFilename();const contents=JSON.stringify(data,null,2);if('showSaveFilePicker' in window){try{const handle=await window.showSaveFilePicker({suggestedName:name,types:[{description:'TRPG Organizer 문서',accept:{'application/json':['.json']}}]});const writable=await handle.createWritable();await writable.write(contents);await writable.close();mockStatus.textContent=`‘${handle.name}’ 파일을 저장했습니다.`;}catch(error){if(error.name!=='AbortError')mockStatus.textContent='파일을 저장하지 못했습니다.';}return;}const blob=new Blob([contents],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);mockStatus.textContent=`‘${name}’ 파일을 저장했습니다.`;});
   async function downloadJson(data,filename){const name=ensureJsonExtension(filename);const contents=JSON.stringify(data,null,2);if(window.roll20Native?.saveJson){const result=await window.roll20Native.saveJson(name,contents);if(result?.ok)return result.filename;if(!result?.canceled)mockStatus.textContent='파일을 저장하지 못했습니다.';return null;}if('showSaveFilePicker' in window){try{const handle=await window.showSaveFilePicker({suggestedName:name,types:[{description:'Roll20 Organizer 파일',accept:{'application/json':['.json']}}]});const writable=await handle.createWritable();await writable.write(contents);await writable.close();return handle.name;}catch(error){if(error.name!=='AbortError')mockStatus.textContent='파일을 저장하지 못했습니다.';return null;}}const blob=new Blob([contents],{type:'application/json'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);return name;}
  const appConfirm=document.getElementById('app-confirm');const appConfirmTitle=document.getElementById('app-confirm-title');const appConfirmMessage=document.getElementById('app-confirm-message');const appConfirmLeft=document.getElementById('app-confirm-cancel');const appConfirmRight=document.getElementById('app-confirm-ok');let appConfirmCallback=null;let appConfirmCancelCallback=null;
  let appConfirmJustOpened=false;
@@ -1689,31 +1984,97 @@ stylePreviewToggle.addEventListener('click',()=>{mockDesign.stylePreview=!mockDe
  appConfirmLeft.addEventListener('click',()=>{closeDetachedPanel(appConfirm,true);const cb=appConfirmCancelCallback;appConfirmCallback=null;appConfirmCancelCallback=null;if(cb)cb();});
  document.addEventListener('click',e=>{if(appConfirmJustOpened){appConfirmJustOpened=false;return;}if(detachedPanelState.has(appConfirm)&&!appConfirm.contains(e.target)){closeDetachedPanel(appConfirm,true);appConfirmCallback=null;appConfirmCancelCallback=null;}});
  appConfirmRight.addEventListener('click',()=>{closeDetachedPanel(appConfirm,true);const cb=appConfirmCallback;appConfirmCallback=null;appConfirmCancelCallback=null;if(cb)cb();});
- document.getElementById('settings-backup').addEventListener('click',async()=>{const data={version:1,type:'settings-backup',commands:mockCommands,styleVault:mockStyleVault,subviews:globalThis.roll20SubviewStore?.export?.()||[]};const saved=await downloadJson(data,'roll20-organizer-backup.json');if(saved)mockStatus.textContent='명령어, 스타일 보관함과 서브뷰 설정을 백업했습니다.';});
+ document.getElementById('settings-backup').addEventListener('click',async()=>{const data=collectSettingsData();const saved=await downloadJson(data,defaultSettingsFilename());if(saved)mockStatus.textContent=`‘${saved}’에 서브뷰 주소, 스타일과 명령어 설정을 저장했습니다.`;});
  document.getElementById('settings-clear-text').addEventListener('click',()=>{showAppConfirm('입력한 글을 삭제할까요?','편집 중인 문장이 모두 사라집니다. 명령어와 스타일은 유지됩니다.',()=>{mockEditor.innerHTML='';globalThis.roll20BookmarkTools?.clear?.();syncGutterLines();mockStatus.textContent='입력한 글을 모두 삭제했습니다.';});});
  document.getElementById('settings-restore').addEventListener('click',()=>document.getElementById('settings-restore-file').click());
- document.getElementById('settings-restore-file').addEventListener('change',async()=>{const input=document.getElementById('settings-restore-file');const file=input.files[0];if(!file)return;try{const data=JSON.parse(await file.text());Object.keys(mockCommands).forEach(k=>delete mockCommands[k]);Object.assign(mockCommands,data.commands||{'/desc ':'✷'});Object.keys(mockStyleVault).forEach(k=>delete mockStyleVault[k]);Object.assign(mockStyleVault,data.styleVault||{});if(data.subviews)globalThis.roll20SubviewStore?.import?.(data.subviews);persistStyleVault();rebuildCommandMenu();renderStyleVault();mockStatus.textContent=`‘${file.name}’ 백업을 복원했습니다.`;}catch{mockStatus.textContent='백업 파일을 읽을 수 없습니다.';}input.value='';});
+ document.getElementById('settings-restore-file').addEventListener('change',async()=>{const input=document.getElementById('settings-restore-file');const file=input.files[0];if(!file)return;try{const data=JSON.parse(await file.text());Object.keys(mockCommands).forEach(k=>delete mockCommands[k]);Object.assign(mockCommands,data.commands||{'/desc ':'✷'});Object.keys(mockStyleColors).forEach(k=>delete mockStyleColors[k]);Object.assign(mockStyleColors,data.styleColors||{});Object.keys(mockStyleCss).forEach(k=>delete mockStyleCss[k]);Object.assign(mockStyleCss,data.styleCss||{});Object.keys(mockStyleVault).forEach(k=>delete mockStyleVault[k]);Object.assign(mockStyleVault,data.styleVault||{});if(data.subviews)globalThis.roll20SubviewStore?.import?.(data.subviews);persistStyleVault();rebuildCommandMenu();rebuildStyleUi();renderStyleVault();mockStatus.textContent=`‘${file.name}’ 설정을 복원했습니다.`;}catch{mockStatus.textContent='설정 파일을 읽을 수 없습니다.';}input.value='';});
 const importFile=document.getElementById('import-file');
 document.getElementById('choose-import-file').addEventListener('click',()=>importFile.click());
-  importFile.addEventListener('change',async()=>{const file=importFile.files[0];if(!file){mockStatus.textContent='파일 열기를 취소했습니다.';return;}try{const data=JSON.parse(await file.text());if(data.type==='settings-backup'){Object.keys(mockCommands).forEach(key=>delete mockCommands[key]);Object.assign(mockCommands,data.commands||{});Object.keys(mockStyleVault).forEach(key=>delete mockStyleVault[key]);Object.assign(mockStyleVault,data.styleVault||{});Object.entries(mockStyleVault).forEach(([name,saved])=>{mockStyleColors[name]=saved.color;mockStyleCss[name]=saved.css;});if(data.subviews)globalThis.roll20SubviewStore?.import?.(data.subviews);persistStyleVault();rebuildCommandMenu();rebuildStyleUi();mockStatus.textContent=`‘${file.name}’ 백업에서 명령어, 스타일과 서브뷰 설정을 열었습니다.`;importFile.value='';return;}mockEditor.innerHTML=data.editorHtml||'<div><br></div>';globalThis.roll20BookmarkTools?.import?.(data.bookmarks||[]);Object.keys(mockCommands).forEach(key=>delete mockCommands[key]);Object.assign(mockCommands,data.commands||{'/desc ':'✷'});Object.keys(mockStyleColors).forEach(key=>delete mockStyleColors[key]);Object.assign(mockStyleColors,data.styleColors||{});Object.keys(mockStyleCss).forEach(key=>delete mockStyleCss[key]);Object.assign(mockStyleCss,data.styleCss||{});syncGutterLines();(data.lineCommands||[]).forEach((command,index)=>{const b=getGutterButtons()[index];if(b){b.dataset.command=command;b.textContent=command==='none'?'·':mockCommands[command]||'·';}});rebuildCommandMenu();rebuildStyleUi();mockStatus.textContent=`‘${file.name}’ 파일을 열었습니다.`;}catch{mockStatus.textContent='Roll20 Organizer 파일을 읽을 수 없습니다.';}importFile.value='';});
+  importFile.addEventListener('change',async()=>{const file=importFile.files[0];if(!file){mockStatus.textContent='파일 열기를 취소했습니다.';return;}try{const data=JSON.parse(await file.text());if(data.type==='settings-backup'){Object.keys(mockCommands).forEach(key=>delete mockCommands[key]);Object.assign(mockCommands,data.commands||{});Object.keys(mockStyleColors).forEach(key=>delete mockStyleColors[key]);Object.assign(mockStyleColors,data.styleColors||{});Object.keys(mockStyleCss).forEach(key=>delete mockStyleCss[key]);Object.assign(mockStyleCss,data.styleCss||{});Object.keys(mockStyleVault).forEach(key=>delete mockStyleVault[key]);Object.assign(mockStyleVault,data.styleVault||{});if(data.subviews)globalThis.roll20SubviewStore?.import?.(data.subviews);persistStyleVault();rebuildCommandMenu();rebuildStyleUi();renderStyleVault();mockStatus.textContent=`‘${file.name}’에서 서브뷰 주소, 스타일과 명령어 설정을 열었습니다.`;importFile.value='';return;}
+
+mockEditor.innerHTML=data.editorHtml||'<div><br></div>';
+globalThis.roll20BookmarkTools?.import?.(data.bookmarks||[]);
+
+Object.keys(mockCommands).forEach(key=>delete mockCommands[key]);
+Object.assign(mockCommands,data.commands||{'/desc ':'✷'});
+
+Object.keys(mockStyleColors).forEach(key=>delete mockStyleColors[key]);
+Object.assign(mockStyleColors,data.styleColors||{});
+
+Object.keys(mockStyleCss).forEach(key=>delete mockStyleCss[key]);
+Object.assign(mockStyleCss,data.styleCss||{});
+
+if(data.styleVault){
+ Object.keys(mockStyleVault).forEach(key=>delete mockStyleVault[key]);
+ Object.assign(mockStyleVault,data.styleVault||{});
+ persistStyleVault();
+}
+
+if(Array.isArray(data.comments)){
+ const lines=getEditorLines();
+ data.comments.forEach((text,index)=>{
+  if(text==null||!lines[index])return;
+  const existing=lines[index].querySelector(':scope > .utility-line-comment');
+  if(existing){
+   const body=existing.querySelector('.utility-line-comment-body');
+   if(body)body.textContent=String(text);
+   existing.dataset.comment=String(text);
+  }else if(String(text).length){
+   setLineComment(lines[index],String(text),false);
+   lines[index].querySelector(':scope > .utility-line-comment')?.classList.remove('open');
+  }
+ });
+}
+
+// 포스트잇 내용/색/불투명도/위치 복원
+if(data.postit){
+ const p=data.postit;
+ postitText.value=String(p.text||'');
+ postitColor=POSTIT_COLORS.includes(p.color)?p.color:'#FFE66E';
+ postitOpacityValue=Math.max(30,Math.min(100,Number(p.opacity)||100));
+ postitOpacity.value=String(postitOpacityValue);
+ postit.style.opacity=String(postitOpacityValue/100);
+ postitSavedPosition=p.position&&Number.isFinite(Number(p.position.left))&&Number.isFinite(Number(p.position.top))
+  ? {left:Number(p.position.left),top:Number(p.position.top)}
+  : null;
+ try{
+  localStorage.setItem('roll20-organizer-postit',postitText.value);
+  localStorage.setItem('roll20-organizer-postit-color',postitColor);
+  localStorage.setItem('roll20-organizer-postit-opacity',String(postitOpacityValue));
+  if(postitSavedPosition)localStorage.setItem('roll20-organizer-postit-position',JSON.stringify(postitSavedPosition));
+  else localStorage.removeItem('roll20-organizer-postit-position');
+ }catch{}
+ applyPostitColor();
+}
+
+syncGutterLines();
+(data.lineCommands||[]).forEach((command,index)=>{
+ const b=getGutterButtons()[index];
+ if(b){
+  b.dataset.command=command;
+  b.textContent=command==='none'?'·':mockCommands[command]||'·';
+ }
+});
+rebuildCommandMenu();
+rebuildStyleUi();
+renderStyleVault();
+mockStatus.textContent=`‘${file.name}’ 문서를 열었습니다.`;
+}catch{mockStatus.textContent='TRPG Organizer 파일을 읽을 수 없습니다.';}importFile.value='';});
 mockRoot.querySelectorAll('[data-menu]').forEach(button=>button.addEventListener('click',()=>{const panels={commands:menuCommands,styles:menuStyles,settings:menuSettings};const panel=panels[button.dataset.menu];const state=detachedPanelState.get(panel);if(state&&!state.popup.closed){closeDetachedPanel(panel);renderMockDesign();return;}for(const openPanel of [...detachedPanelState.keys()]){if(openPanel!==panel&&!closeDetachedPanel(openPanel))return;}button.setAttribute('aria-pressed','true');openDetachedPanel(panel,button.dataset.menu==='settings'?350:340);renderMockDesign();}));
 document.addEventListener('pointerdown',e=>{if(e.target.closest('[data-menu]'))return;for(const panel of [...detachedPanelState.keys()]){if(!panel.contains(e.target))closeDetachedPanel(panel);}},true);
 document.addEventListener('click',e=>{const openPanel=mockRoot.querySelector('.organizer-menu-panel.open');if(!openPanel||openPanel.contains(e.target))return;const trigger=mockRoot.querySelector('[data-menu="'+openPanel.id.replace('menu-','')+'"]');if(trigger&&trigger.contains(e.target))return;openPanel.classList.remove('open');if(trigger)trigger.setAttribute('aria-pressed','false');renderMockDesign();});
  function makeFloatingWindowDraggable(panel){const handle=panel.querySelector('h3');let drag=null;handle.addEventListener('pointerdown',e=>{if(e.button!==0||panel.classList.contains('detached'))return;const parentRect=panel.offsetParent.getBoundingClientRect();const rect=panel.getBoundingClientRect();panel.style.right='auto';panel.style.left=`${rect.left-parentRect.left}px`;panel.style.top=`${rect.top-parentRect.top}px`;panel.style.transform='none';drag={pointerId:e.pointerId,x:e.clientX,y:e.clientY,left:panel.offsetLeft,top:panel.offsetTop};handle.setPointerCapture(e.pointerId);e.preventDefault();});handle.addEventListener('pointermove',e=>{if(!drag||drag.pointerId!==e.pointerId)return;panel.style.left=`${drag.left+e.clientX-drag.x}px`;panel.style.top=`${drag.top+e.clientY-drag.y}px`;});handle.addEventListener('pointerup',e=>{if(!drag||drag.pointerId!==e.pointerId)return;handle.releasePointerCapture(e.pointerId);drag=null;});handle.addEventListener('pointercancel',()=>drag=null);}
  mockRoot.querySelectorAll('.organizer-menu-panel, .style-editor-float').forEach(makeFloatingWindowDraggable);
- const organizerWindow=mockRoot.querySelector('.organizer-window');const resizeHandle=document.getElementById('resize-handle');let resizeState=null;
- // 본문과 열려 있는 서브뷰가 전부 최소 300px 씩은 확보되도록, 창의 최소 폭을
- // 서브뷰 개수에 맞춰 동적으로 계산합니다. 이게 없으면 창을 그보다 작게 줄일 때
- // 내용물은 300px에서 멈추고 대신 창 밖으로 잘려나갑니다.
- function minWindowWidth(){const openCount=(split?.classList.contains('has-subview')?[openItems?.left,openItems?.right].filter(Boolean).length:0);return openCount?300+openCount*300:380;}
-resizeHandle.addEventListener('pointerdown',e=>{if(e.button!==0)return;const rect=organizerWindow.getBoundingClientRect();resizeState={id:e.pointerId,x:e.clientX,y:e.clientY,width:rect.width,height:rect.height};resizeHandle.setPointerCapture(e.pointerId);e.preventDefault();});resizeHandle.addEventListener('pointermove',e=>{if(!resizeState||resizeState.id!==e.pointerId)return;organizerWindow.style.width=`${Math.max(minWindowWidth(),resizeState.width+e.clientX-resizeState.x)}px`;organizerWindow.style.height=`${Math.max(240,resizeState.height+e.clientY-resizeState.y)}px`;});resizeHandle.addEventListener('pointerup',e=>{if(resizeState&&resizeState.id===e.pointerId){resizeHandle.releasePointerCapture(e.pointerId);resizeState=null;mockStatus.textContent='편집 영역과 함께 창 크기를 조절했습니다.';}});
+ const organizerWindow=mockRoot.querySelector('.organizer-window');const resizeHandle=document.getElementById('resize-handle');let resizeState=null;organizerWindow.style.removeProperty('width');organizerWindow.style.removeProperty('height');organizerWindow.style.removeProperty('margin-left');organizerWindow.style.removeProperty('margin-top');
+ function minWindowWidth(){const openCount=document.querySelectorAll('#roll20-notepad-mock .subview-panel.open').length;return 360+openCount*300;}
+resizeHandle.addEventListener('pointerdown',e=>{if(e.button!==0)return;resizeState={id:e.pointerId,x:e.screenX,y:e.screenY,width:window.outerWidth,height:window.outerHeight};resizeHandle.setPointerCapture(e.pointerId);e.preventDefault();});resizeHandle.addEventListener('pointermove',e=>{if(!resizeState||resizeState.id!==e.pointerId)return;const width=Math.max(minWindowWidth(),resizeState.width+e.screenX-resizeState.x);const height=Math.max(240,resizeState.height+e.screenY-resizeState.y);window.roll20Native?.resizeWindow?.({width,height,edges:{right:true,bottom:true}});});resizeHandle.addEventListener('pointerup',e=>{if(resizeState&&resizeState.id===e.pointerId){resizeHandle.releasePointerCapture(e.pointerId);resizeState=null;mockStatus.textContent='창 크기를 조절했습니다.';}});
  const EDGE_ZONE=8;
  function detectResizeEdges(e,rect){const x=e.clientX-rect.left,y=e.clientY-rect.top;return{left:x<=EDGE_ZONE,right:x>=rect.width-EDGE_ZONE,top:y<=EDGE_ZONE,bottom:y>=rect.height-EDGE_ZONE};}
  function edgeCursor(edges){if((edges.top&&edges.left)||(edges.bottom&&edges.right))return'nwse-resize';if((edges.top&&edges.right)||(edges.bottom&&edges.left))return'nesw-resize';if(edges.left||edges.right)return'ew-resize';if(edges.top||edges.bottom)return'ns-resize';return'';}
  let borderResizeState=null;
  organizerWindow.addEventListener('pointermove',e=>{if(borderResizeState||e.target.closest('#resize-handle'))return;const rect=organizerWindow.getBoundingClientRect();const edges=detectResizeEdges(e,rect);organizerWindow.style.cursor=edgeCursor(edges);});
- organizerWindow.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('#resize-handle'))return;const rect=organizerWindow.getBoundingClientRect();const edges=detectResizeEdges(e,rect);if(!edges.left&&!edges.right&&!edges.top&&!edges.bottom)return;const cs=getComputedStyle(organizerWindow);borderResizeState={id:e.pointerId,x:e.clientX,y:e.clientY,width:rect.width,height:rect.height,marginLeft:parseFloat(cs.marginLeft)||0,marginTop:parseFloat(cs.marginTop)||0,edges};organizerWindow.setPointerCapture(e.pointerId);e.preventDefault();});
- organizerWindow.addEventListener('pointermove',e=>{if(!borderResizeState||borderResizeState.id!==e.pointerId)return;const dx=e.clientX-borderResizeState.x,dy=e.clientY-borderResizeState.y;const{left,right,top,bottom}=borderResizeState.edges;let newWidth=borderResizeState.width;if(right)newWidth=borderResizeState.width+dx;else if(left)newWidth=borderResizeState.width-dx;newWidth=Math.min(920,Math.max(minWindowWidth(),newWidth));let newHeight=borderResizeState.height;if(bottom)newHeight=borderResizeState.height+dy;else if(top)newHeight=borderResizeState.height-dy;newHeight=Math.max(240,newHeight);organizerWindow.style.width=`${newWidth}px`;organizerWindow.style.height=`${newHeight}px`;if(left){const appliedDelta=borderResizeState.width-newWidth;organizerWindow.style.marginLeft=`${borderResizeState.marginLeft+appliedDelta}px`;}if(top){const appliedDeltaH=borderResizeState.height-newHeight;organizerWindow.style.marginTop=`${borderResizeState.marginTop+appliedDeltaH}px`;}});
+ organizerWindow.addEventListener('pointerdown',e=>{if(e.button!==0||e.target.closest('#resize-handle'))return;const rect=organizerWindow.getBoundingClientRect();const edges=detectResizeEdges(e,rect);if(!edges.left&&!edges.right&&!edges.top&&!edges.bottom)return;borderResizeState={id:e.pointerId,x:e.screenX,y:e.screenY,width:window.outerWidth,height:window.outerHeight,edges};organizerWindow.setPointerCapture(e.pointerId);e.preventDefault();});
+ organizerWindow.addEventListener('pointermove',e=>{if(!borderResizeState||borderResizeState.id!==e.pointerId)return;const dx=e.screenX-borderResizeState.x,dy=e.screenY-borderResizeState.y;const{left,right,top,bottom}=borderResizeState.edges;let newWidth=borderResizeState.width;if(right)newWidth=borderResizeState.width+dx;else if(left)newWidth=borderResizeState.width-dx;newWidth=Math.max(minWindowWidth(),newWidth);let newHeight=borderResizeState.height;if(bottom)newHeight=borderResizeState.height+dy;else if(top)newHeight=borderResizeState.height-dy;newHeight=Math.max(240,newHeight);window.roll20Native?.resizeWindow?.({width:newWidth,height:newHeight,edges});});
  organizerWindow.addEventListener('pointerup',e=>{if(borderResizeState&&borderResizeState.id===e.pointerId){organizerWindow.releasePointerCapture(e.pointerId);borderResizeState=null;organizerWindow.style.cursor='';mockStatus.textContent='편집 영역과 함께 창 크기를 조절했습니다.';}});
  bindFavoriteStyles();renderStyleContext();renderCommandContext();syncGutterLines();renderMockDesign();mockRoot.querySelectorAll('[title]').forEach(element=>element.removeAttribute('title'));
 if(globalThis.Tweak){const tweak=new Tweak({container:mockRoot,onChange:renderMockDesign});tweak.addSelect(mockDesign,'theme',{label:'컬러 테마',options:[{label:'밝음',value:'light'},{label:'어두움',value:'dark'},{label:'메론소다',value:'pastel'},{label:'딸기소다',value:'pink'},{label:'블루소다',value:'blue'}]});tweak.addSelect(mockDesign,'density',{label:'편집줄 간격',options:[{label:'촘촘하게',value:'compact'},{label:'여유롭게',value:'airy'}]});tweak.addColorPicker(mockDesign,'accent',{label:'강조색',reference:'organizer.accent'});}
@@ -2108,6 +2469,41 @@ if(globalThis.Tweak){const tweak=new Tweak({container:mockRoot,onChange:renderMo
 #roll20-notepad-mock[data-theme="pastel"] :is(.app-menu,.app-submenu) { color:#3d6255; background:#fffef9; border-color:#bddfca; }
 #roll20-notepad-mock[data-theme="pink"]   :is(.app-menu,.app-submenu) { color:#765160; background:#fffefe; border-color:#efcbd9; }
 #roll20-notepad-mock[data-theme="blue"]   :is(.app-menu,.app-submenu) { color:#466577; background:#fefeff; border-color:#bedce9; }
+@container (max-width:440px){
+  #roll20-notepad-mock .app-menu {
+    left:10px;
+    min-width:130px;
+    width:130px;
+  }
+  #roll20-notepad-mock .app-menu-row > button {
+    gap:8px;
+    padding-inline:8px;
+  }
+  #roll20-notepad-mock .app-submenu {
+    left:100%;
+    margin-left:4px;
+    min-width:0;
+    width:200px;
+    max-width:calc(100cqw - 154px);
+    box-sizing:border-box;
+  }
+  #roll20-notepad-mock .app-submenu button {
+    gap:8px;
+    min-width:0;
+    padding-inline:8px;
+  }
+  #roll20-notepad-mock .app-submenu button > span:first-child {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  #roll20-notepad-mock .app-submenu .key {
+    flex:none;
+    font-size:10px;
+  }
+}
+
 
 #roll20-notepad-mock .find-bar { display:none; margin-top:10px; padding:0; border:1px solid transparent; border-radius:9px; background:transparent; }
 #roll20-notepad-mock .find-bar.open { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
@@ -2124,10 +2520,51 @@ if(globalThis.Tweak){const tweak=new Tweak({container:mockRoot,onChange:renderMo
 #roll20-notepad-mock .find-actions { display:grid; gap:6px; }
 #roll20-notepad-mock .find-bar button { height:28px; padding:0 12px; font-size:12px; }
 #roll20-notepad-mock .find-count { flex-basis:100%; font-size:12px; color:light-dark(#746b7c,#aaa2b2); min-height:15px; }
+
+/* 창이 좁아졌을 때만 검색 UI를 세로 구조로 재배치 */
+@container (max-width:440px){
+  #roll20-notepad-mock .find-bar.open {
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:6px 8px;
+    align-items:start;
+  }
+
+  #roll20-notepad-mock .find-fields { display:contents; }
+  #roll20-notepad-mock .find-fields #find-input { grid-column:1; grid-row:1; }
+  #roll20-notepad-mock .find-fields #replace-input { grid-column:1; grid-row:2; }
+
+  #roll20-notepad-mock .find-actions { display:contents; }
+  #roll20-notepad-mock .find-actions #find-next { grid-column:2; grid-row:1; }
+  #roll20-notepad-mock .find-actions #find-replace { grid-column:2; grid-row:2; }
+
+  #roll20-notepad-mock .find-opts {
+    grid-column:1 / -1;
+    grid-row:3;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:5px 8px;
+    padding-top:2px;
+  }
+  #roll20-notepad-mock .find-opts label {
+    min-width:0;
+    white-space:normal;
+    line-height:16px;
+  }
+
+  #roll20-notepad-mock .find-bar button {
+    width:58px;
+    padding:0 8px;
+  }
+
+  #roll20-notepad-mock .find-count {
+    grid-column:1 / -1;
+    grid-row:4;
+  }
+}
 </style>
 
 <script>
-// 스크립트 오류를 상태줄에 그대로 보여줍니다. (개발자 도구 없이 원인 확인용)
 window.addEventListener('error', e => {
  const box = document.getElementById('mock-status');
  if (!box) return;
@@ -2153,7 +2590,6 @@ window.addEventListener('unhandledrejection', e => {
  const oldMenu = document.getElementById('title-file-menu');
  if (oldMenu) oldMenu.remove();
 
- // 기존 제목 클릭 핸들러를 떼어내기 위해 노드를 복제로 교체합니다.
  let appTitle = root.querySelector('.app-title');
  appTitle.replaceWith(appTitle.cloneNode(true));
  appTitle = root.querySelector('.app-title');
@@ -2162,10 +2598,17 @@ window.addEventListener('unhandledrejection', e => {
  appTitle.setAttribute('aria-expanded', 'false');
  appTitle.style.cursor = 'pointer';
 
+ const appCherry = root.querySelector('.organizer-titlebar > .ph-cherries');
+ if (appCherry) {
+  appCherry.setAttribute('role', 'button');
+  appCherry.setAttribute('tabindex', '0');
+  appCherry.setAttribute('aria-label', '프로그램 메뉴 열기');
+  appCherry.setAttribute('aria-expanded', 'false');
+ }
+
  const click = (id) => document.getElementById(id)?.click();
  const exec  = (cmd) => { editor.focus(); native?.editAction(cmd); };
 
- // ---- 메뉴 정의 -------------------------------------------------------------
  const MENUS = [
   { id:'file', label:'파일', items:[
     { label:'새 작업',        key:'Ctrl+N', run:() => click('settings-clear-text') },
@@ -2194,8 +2637,18 @@ window.addEventListener('unhandledrejection', e => {
      { label:'북마크 하기', key:'Alt+왼쪽 클릭', run:() => globalThis.roll20BookmarkTools?.toggleCurrent?.() },
   ]},
   { id:'tools', label:'사용자 도구', items:[
-    { label:'채팅 위치 보정',        run:() => native?.calibrate() },
-    { label:'전송 테스트 (엔터 없이)', run:() => native?.testSend() },
+    { label:'자동 탐색 모드', mode:'auto',
+      run:async () => {
+        const result = await native?.setTargetMode?.('auto');
+        if (result?.ok !== false) status.textContent='전송 방식을 자동 탐색 모드로 변경했습니다.';
+      }},
+    { label:'직접 지정 모드', mode:'direct',
+      run:async () => {
+        const result = await native?.setTargetMode?.('direct');
+        if (result?.ok) status.textContent='직접 지정할 채팅 입력 위치를 기억했습니다.';
+        else if (result?.error === 'cancelled') status.textContent='직접 지정을 취소했습니다.';
+      }},
+    { sep:true },
     { label:'전송 시 엔터까지 누르기', checkbox:'enter',
       run:async (btn) => {
         const next = btn.getAttribute('aria-checked') !== 'true';
@@ -2203,14 +2656,11 @@ window.addEventListener('unhandledrejection', e => {
         btn.setAttribute('aria-checked', String(next));
       }},
     { sep:true },
-    { label:'대상 창 직접 고르기', run:() => native?.pickWindow() },
-     { label:'개발자 도구', key:'F12',  run:() => native?.openDevTools() },
-     { sep:true },
-     { label:'도움말', run:() => { status.textContent='도움말은 추후 추가될 예정입니다.'; } },
+    { label:'개발자 도구', key:'F12', run:() => native?.openDevTools() },
+    { label:'도움말', key:'F1', run:() => native?.openHelp?.() },
   ]},
  ];
 
- // ---- 메뉴 만들기 -----------------------------------------------------------
  const menu = document.createElement('div');
  menu.className = 'app-menu';
  menu.id = 'app-menu';
@@ -2225,9 +2675,17 @@ window.addEventListener('unhandledrejection', e => {
    b.type = 'button';
    b.innerHTML = `<span><span class="tick">✓</span>${it.label}</span><span class="key">${it.key || ''}</span>`;
    if (it.checkbox) { b.setAttribute('aria-checked', 'false'); b.dataset.checkbox = it.checkbox; }
+   if (it.mode) {
+     b.dataset.mode = it.mode;
+     b.setAttribute('aria-checked', 'false');
+   }
    b.addEventListener('click', async (e) => {
      e.stopPropagation();
      try { await it.run(b); } catch (err) { console.warn('[menu]', it.label, err); }
+     if (it.mode) {
+       const current = await native?.getTargetMode?.();
+       sub.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-checked', String(x.dataset.mode === current)));
+     }
      if (!it.checkbox) closeMenu();
    });
    sub.append(b);
@@ -2256,64 +2714,294 @@ window.addEventListener('unhandledrejection', e => {
   return row;
  });
 
- // 업데이트 항목 — 업데이트가 있을 때만 나타납니다.
  const updateRow = document.createElement('div');
  updateRow.className = 'app-menu-row';
- updateRow.style.display = 'none';
  const updateBtn = document.createElement('button');
  updateBtn.type = 'button';
+ updateBtn.innerHTML = '<span>업데이트 확인</span>';
+ updateBtn.onclick = async (e) => {
+  e.stopPropagation();
+  if (!native?.checkUpdate) return;
+  updateBtn.innerHTML = '<span>업데이트 확인 중…</span>';
+  try { await native.checkUpdate(); } catch {}
+ };
  updateRow.append(updateBtn);
  menu.append(updateRow);
 
  win.append(menu);
 
- function closeMenu() {
-  menu.classList.remove('open');
-  rows.forEach(r => r.classList.remove('active'));
-  appTitle.setAttribute('aria-expanded', 'false');
- }
- function openMenu() {
-  // 메뉴를 먼저 엽니다. 아래 네이티브 호출이 실패해도 메뉴가 안 열리는 일이 없도록.
-  menu.classList.add('open');
-  appTitle.setAttribute('aria-expanded', 'true');
+ let menuPopup = null;
 
-  Promise.resolve()
-   .then(() => native?.getEnterOnSend?.())
-   .then(on => menu.querySelector('[data-checkbox="enter"]')?.setAttribute('aria-checked', String(!!on)))
-   .catch(() => {});
-  refreshUpdateRow();
+ function popupMenuColors() {
+  const cs = getComputedStyle(menu);
+  const sub = menu.querySelector('.app-submenu');
+  const ss = sub ? getComputedStyle(sub) : cs;
+  return {
+   color: cs.color,
+   background: cs.backgroundColor,
+   border: cs.borderColor,
+   subBackground: ss.backgroundColor || cs.backgroundColor,
+   subBorder: ss.borderColor || cs.borderColor
+  };
  }
+
+ function closeMenu() {
+  menu.classList.remove('open'); // 예외 시 사용하는 내장 메뉴도 닫기
+  rows.forEach(r => r.classList.remove('active'));
+  if (menuPopup && !menuPopup.closed) {
+   try { menuPopup.close(); } catch {}
+  }
+  menuPopup = null;
+  appTitle.setAttribute('aria-expanded', 'false');
+  appCherry?.setAttribute('aria-expanded', 'false');
+ }
+
+ async function openDetachedMenu() {
+  const rect = appTitle.getBoundingClientRect();
+  const popupWidth = 390;
+  const popupHeight = 470;
+  const features = [
+   `width=${popupWidth}`,
+   `height=${popupHeight}`,
+   `rTop=${Math.round(rect.top)}`,
+   `rLeft=${Math.round(rect.left)}`,
+   `rWidth=${Math.round(rect.width)}`,
+   `rBottom=${Math.round(rect.bottom)}`
+  ].join(',');
+
+  const popup = window.open('', 'roll20-panel-appmenu', features);
+  if (!popup) return false;
+  menuPopup = popup;
+  appTitle.setAttribute('aria-expanded', 'true');
+  appCherry?.setAttribute('aria-expanded', 'true');
+
+  await new Promise(resolve => setTimeout(resolve, 20));
+  if (popup.closed) return false;
+
+  const colors = popupMenuColors();
+  const doc = popup.document;
+  doc.open();
+  doc.write(`<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:Pretendard,"Noto Sans KR",sans-serif;color:${colors.color}}
+body{padding:5px}
+.shell{display:flex;align-items:flex-start;width:max-content;max-width:100%;filter:drop-shadow(0 12px 24px #00000028)}
+.main,.sub{border:1px solid ${colors.border};background:${colors.background};}
+.main{width:130px;padding:5px;border-radius:9px}
+.sub{width:245px;max-height:450px;overflow:auto;padding:5px;border-radius:9px;margin-left:4px}
+.row, .item{width:100%;height:34px;border:0;border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:13px;cursor:pointer}
+.row{display:flex;align-items:center;justify-content:space-between;padding:0 9px;text-align:left}
+.row:hover,.row.active,.item:hover{background:color-mix(in srgb, currentColor 8%, transparent)}
+.item{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 9px;text-align:left}
+.label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.key{flex:none;opacity:.5;font-size:11px}
+.caret{opacity:.55;font-size:11px}
+.tick{display:inline-block;width:14px;opacity:0}
+.item[aria-checked="true"] .tick{opacity:1}
+.sep{height:1px;margin:4px 2px;background:color-mix(in srgb,currentColor 18%,transparent)}
+.update{margin-top:4px;border-top:1px solid color-mix(in srgb,currentColor 18%,transparent);padding-top:4px}
+::-webkit-scrollbar{width:7px}
+::-webkit-scrollbar-thumb{background:color-mix(in srgb,currentColor 20%,transparent);border-radius:8px}
+</style>
+</head>
+<body><div class="shell"><div class="main" id="main"></div><div class="sub" id="sub"></div></div></body>
+</html>`);
+  doc.close();
+
+  const mainBox = doc.getElementById('main');
+  const subBox = doc.getElementById('sub');
+
+  doc.addEventListener('pointerdown', e => {
+   const insideMenuBox = e.target?.closest?.('.main,.sub');
+   if (!insideMenuBox) {
+    e.preventDefault();
+    e.stopPropagation();
+    closeMenu();
+   }
+  }, true);
+
+  let activeId = null;
+
+  const renderSub = async (def) => {
+   activeId = def.id;
+   mainBox.querySelectorAll('.row[data-id]').forEach(b => b.classList.toggle('active', b.dataset.id === def.id));
+   subBox.replaceChildren();
+
+   for (const it of def.items) {
+    if (it.sep) {
+     const sep = doc.createElement('div');
+     sep.className = 'sep';
+     subBox.append(sep);
+     continue;
+    }
+    const b = doc.createElement('button');
+    b.className = 'item';
+    b.type = 'button';
+    b.innerHTML = `<span class="label"><span class="tick">✓</span>${it.label}</span><span class="key">${it.key || ''}</span>`;
+    if (it.checkbox) {
+     b.dataset.checkbox = it.checkbox;
+     b.setAttribute('aria-checked', 'false');
+     try {
+      if (it.checkbox === 'enter') {
+       const on = await native?.getEnterOnSend?.();
+       b.setAttribute('aria-checked', String(!!on));
+      }
+     } catch {}
+    }
+    if (it.mode) {
+     b.dataset.mode = it.mode;
+     b.setAttribute('aria-checked', 'false');
+     try {
+      const current = await native?.getTargetMode?.();
+      b.setAttribute('aria-checked', String(current === it.mode));
+     } catch {}
+    }
+    b.addEventListener('click', async e => {
+     e.stopPropagation();
+     try { await it.run(b); } catch (err) { console.warn('[popup menu]', it.label, err); }
+     if (it.mode) {
+      try {
+       const current = await native?.getTargetMode?.();
+       subBox.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-checked', String(x.dataset.mode === current)));
+      } catch {}
+     }
+     if (!it.checkbox && !it.mode) closeMenu();
+    });
+    subBox.append(b);
+   }
+  };
+
+  MENUS.forEach((def, idx) => {
+   const b = doc.createElement('button');
+   b.className = 'row';
+   b.type = 'button';
+   b.dataset.id = def.id;
+   b.innerHTML = `<span>${def.label}</span><span class="caret">▶</span>`;
+   b.addEventListener('mouseenter', () => renderSub(def));
+   b.addEventListener('click', () => renderSub(def));
+   mainBox.append(b);
+   if (idx === 0) renderSub(def);
+  });
+
+  try {
+   const s = await native?.updateState?.();
+   const wrap = doc.createElement('div');
+   wrap.className = 'update';
+   const b = doc.createElement('button');
+   b.className = 'row';
+   b.type = 'button';
+   if (s?.status === 'downloaded') {
+    b.innerHTML = `<span>업데이트 v${s.version} 설치</span>`;
+    b.addEventListener('click', () => { native?.installUpdate?.(); closeMenu(); });
+   } else if (s?.status === 'downloading') {
+    b.innerHTML = `<span>업데이트 중</span><span class="key">${s.percent}%</span>`;
+   } else if (s?.status === 'checking') {
+    b.innerHTML = '<span>업데이트 확인 중…</span>';
+   } else {
+    b.innerHTML = '<span>업데이트 확인</span>';
+    b.addEventListener('click', async () => {
+     try { await native?.checkUpdate?.(); } finally { closeMenu(); }
+    });
+   }
+   wrap.append(b);
+   mainBox.append(wrap);
+  } catch {}
+
+  popup.addEventListener('beforeunload', () => {
+   if (menuPopup === popup) {
+    menuPopup = null;
+    appTitle.setAttribute('aria-expanded', 'false');
+    appCherry?.setAttribute('aria-expanded', 'false');
+   }
+  });
+  popup.addEventListener('blur', () => {
+   setTimeout(() => {
+    if (menuPopup === popup && !popup.closed && !popup.document.hasFocus()) closeMenu();
+   }, 80);
+  });
+
+  try { popup.focus(); } catch {}
+  return true;
+ }
+
+ function openMenu() {
+  openDetachedMenu().then(ok => {
+   if (ok) return;
+   menu.classList.add('open');
+   appTitle.setAttribute('aria-expanded', 'true');
+   appCherry?.setAttribute('aria-expanded', 'true');
+   Promise.resolve()
+    .then(async () => {
+      const [enterOn, mode] = await Promise.all([
+        native?.getEnterOnSend?.(),
+        native?.getTargetMode?.()
+      ]);
+      menu.querySelector('[data-checkbox="enter"]')?.setAttribute('aria-checked', String(!!enterOn));
+      menu.querySelectorAll('[data-mode]').forEach(x => x.setAttribute('aria-checked', String(x.dataset.mode === mode)));
+    })
+    .catch(() => {});
+   refreshUpdateRow();
+  });
+ }
+
  appTitle.addEventListener('click', e => {
   e.stopPropagation();
-  menu.classList.contains('open') ? closeMenu() : openMenu();
+  const detachedOpen = menuPopup && !menuPopup.closed;
+  const embeddedOpen = menu.classList.contains('open');
+  (detachedOpen || embeddedOpen) ? closeMenu() : openMenu();
  });
  appTitle.addEventListener('keydown', e => {
   if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); appTitle.click(); }
  });
+
+ if (appCherry) {
+  appCherry.addEventListener('click', e => {
+   e.stopPropagation();
+   appTitle.click();
+  });
+  appCherry.addEventListener('keydown', e => {
+   if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    appCherry.click();
+   }
+  });
+ }
+
  document.addEventListener('click', e => {
-  if (!menu.contains(e.target) && !appTitle.contains(e.target)) closeMenu();
+  if (!menu.contains(e.target) &&
+      !appTitle.contains(e.target) &&
+      !appCherry?.contains(e.target)) closeMenu();
  });
 
- // ---- 업데이트 항목 ---------------------------------------------------------
  async function refreshUpdateRow() {
   if (!native?.updateState) return;
   let s;
-  try { s = await native.updateState(); } catch { updateRow.style.display = 'none'; return; }
+  try { s = await native.updateState(); } catch { return; }
   if (s.status === 'downloaded') {
    updateBtn.innerHTML = `<span>업데이트 v${s.version} 설치</span>`;
    updateBtn.onclick = (e) => { e.stopPropagation(); native.installUpdate(); };
-   updateRow.style.display = '';
   } else if (s.status === 'downloading') {
    updateBtn.innerHTML = `<span>업데이트 v${s.version} 내려받는 중</span><span class="key">${s.percent}%</span>`;
    updateBtn.onclick = (e) => e.stopPropagation();
-   updateRow.style.display = '';
+  } else if (s.status === 'checking') {
+   updateBtn.innerHTML = '<span>업데이트 확인 중…</span>';
+   updateBtn.onclick = (e) => e.stopPropagation();
   } else {
-   updateRow.style.display = 'none';
+   updateBtn.innerHTML = '<span>업데이트 확인</span>';
+   updateBtn.onclick = async (e) => {
+    e.stopPropagation();
+    if (!native?.checkUpdate) return;
+    updateBtn.innerHTML = '<span>업데이트 확인 중…</span>';
+    try { await native.checkUpdate(); } catch {}
+   };
   }
  }
  if (native?.updateState) setInterval(refreshUpdateRow, 20000);
 
- // ---- 찾기 / 바꾸기 ---------------------------------------------------------
  const findBar = document.createElement('div');
  findBar.className = 'find-bar';
  findBar.setAttribute('aria-label', '찾기 및 바꾸기');
@@ -2324,6 +3012,8 @@ window.addEventListener('unhandledrejection', e => {
    '<label><input type="checkbox" id="opt-multi"> 여러 단어 찾기</label>' +
    '<label><input type="checkbox" id="opt-nospace"> 띄어쓰기 무시</label>' +
    '<label><input type="checkbox" id="opt-josa" checked> 조사 자동 교정</label>' +
+   '<label><input type="checkbox" id="opt-postit"> 포스트잇 포함</label>' +
+   '<label><input type="checkbox" id="opt-comment"> 코멘트 포함</label>' +
    '<label><input type="checkbox" id="opt-all"> 모두 바꾸기</label>' +
   '</div>' +
   '<div class="find-fields">' +
@@ -2336,7 +3026,6 @@ window.addEventListener('unhandledrejection', e => {
   '</div>' +
   '<div class="find-count" id="find-count"></div>';
 
- // 스타일 버튼 줄 바로 아래에 끼워 넣습니다.
  const findAnchor = root.querySelector('.organizer-stylebar') || root.querySelector('.organizer-status');
  if (findAnchor) findAnchor.after(findBar); else root.append(findBar);
 
@@ -2348,18 +3037,23 @@ window.addEventListener('unhandledrejection', e => {
  const optMulti   = findBar.querySelector('#opt-multi');
  const optNoSpace = findBar.querySelector('#opt-nospace');
  const optJosa    = findBar.querySelector('#opt-josa');
+ const optPostit  = findBar.querySelector('#opt-postit');
+ const optComment = findBar.querySelector('#opt-comment');
  const optAll     = findBar.querySelector('#opt-all');
  let hitIndex = -1;
 
- // 편집기 안의 모든 텍스트를 한 줄로 잇고, 각 글자가 어느 텍스트 노드의
- // 몇 번째 위치인지 표를 만들어 둡니다. 스타일 태그를 건드리지 않고
- // 범위(Range)만 잡기 위해서입니다.
  function buildIndex() {
   const walker = document.createTreeWalker(editor, NodeFilter.SHOW_TEXT);
   const map = [];
   let text = '', node;
   while ((node = walker.nextNode())) {
    if (!node.nodeValue.length) continue;
+
+   const parent = node.parentElement;
+   if (!optComment.checked && parent?.closest('.utility-line-comment')) continue;
+
+   if (parent?.closest('.utility-postit-marker')) continue;
+
    map.push({ node, start: text.length });
    text += node.nodeValue;
   }
@@ -2380,44 +3074,72 @@ window.addEventListener('unhandledrejection', e => {
   return !(before && WORD.test(before)) && !(after && WORD.test(after));
  }
 
- function search() {
+ function findHitsInText(sourceText, source='editor') {
   const raw = findInput.value;
-  if (!raw.trim()) return { hits: [], index: null };
-  const index = buildIndex();
+  if (!raw.trim()) return [];
 
-  // 띄어쓰기 무시를 켜면 공백을 걷어낸 문자열에서 찾고,
-  // 원래 위치를 되찾을 수 있도록 대응표를 함께 만듭니다.
-  let hay = index.text;
+  let hay = sourceText;
   let pos = null;
+
   if (optNoSpace.checked) {
-   let s = ''; pos = [];
+   let compact = '';
+   pos = [];
    for (let i = 0; i < hay.length; i++) {
     if (/\s/.test(hay[i])) continue;
-    s += hay[i]; pos.push(i);
+    compact += hay[i];
+    pos.push(i);
    }
-   hay = s;
+   hay = compact;
   }
+
   if (!optCase.checked) hay = hay.toLowerCase();
 
   const terms = optMulti.checked ? raw.split(/[\s,]+/).filter(Boolean) : [raw];
   const hits = [];
+
   for (const term of terms) {
    let t = optNoSpace.checked ? term.replace(/\s+/g, '') : term;
    if (!optCase.checked) t = t.toLowerCase();
    if (!t) continue;
+
    let at = hay.indexOf(t);
    while (at !== -1) {
     const start = pos ? pos[at] : at;
-    const end   = (pos ? pos[at + t.length - 1] : at + t.length - 1) + 1;
-    if (!optWhole.checked || isWhole(index.text, start, end)) hits.push({ start, end });
+    const end = (pos ? pos[at + t.length - 1] : at + t.length - 1) + 1;
+    if (!optWhole.checked || isWhole(sourceText, start, end)) {
+     hits.push({ start, end, source });
+    }
     at = hay.indexOf(t, at + t.length);
    }
   }
-  hits.sort((x, y) => x.start - y.start);
-  return { hits: hits.filter((h, i) => i === 0 || h.start !== hits[i - 1].start), index };
+
+  hits.sort((a, b) => a.start - b.start);
+  return hits.filter((h, i) => i === 0 || h.start !== hits[i - 1].start);
+ }
+
+ function search() {
+  const raw = findInput.value;
+  if (!raw.trim()) return { hits: [], index: null };
+
+  const index = buildIndex();
+  const editorHits = findHitsInText(index.text, 'editor');
+  const hits = [...editorHits];
+
+  if (optPostit.checked && typeof postitText !== 'undefined' && postitText.value) {
+   hits.push(...findHitsInText(postitText.value, 'postit'));
+  }
+
+  return { hits, index };
  }
 
  function selectHit(hit, index) {
+  if (hit.source === 'postit') {
+   openPostit();
+   postitText.focus();
+   postitText.setSelectionRange(hit.start, hit.end);
+   return true;
+  }
+
   const a = locate(hit.start, index.map);
   const b = locate(hit.end - 1, index.map);
   if (!a || !b) return false;
@@ -2439,8 +3161,6 @@ window.addEventListener('unhandledrejection', e => {
   countLabel.textContent = `${hitIndex + 1} / ${hits.length}`;
  }
 
- // ---- 조사 자동 교정 --------------------------------------------------------
- // 바꾼 말의 받침에 맞춰 뒤따르는 조사를 고칩니다. (사과를 → 배를 → 배를/배가 등)
  const JOSA = [['이라고','라고'], ['이라도','라도'], ['이라서','라서'], ['이라면','라면'],
                ['이랑','랑'], ['이나마','나마'], ['이나','나'], ['이며','며'], ['이고','고'],
                ['이든','든'], ['이여','여'], ['이어','여'], ['이에요','예요'], ['으로','로'],
@@ -2483,9 +3203,18 @@ window.addEventListener('unhandledrejection', e => {
  }
 
  function replaceAt(hit, index) {
+  const text = replaceInput.value;
+
+  if (hit.source === 'postit') {
+   openPostit();
+   postitText.focus();
+   postitText.setRangeText(text, hit.start, hit.end, 'end');
+   postitText.dispatchEvent(new Event('input', { bubbles: true }));
+   return true;
+  }
+
   if (!selectHit(hit, index)) return false;
   const range = window.getSelection().getRangeAt(0);
-  const text = replaceInput.value;
   range.deleteContents();
   if (text) range.insertNode(document.createTextNode(text));
   if (optJosa.checked && text) fixJosaAfter(hit.start + text.length, text[text.length - 1]);
@@ -2502,7 +3231,6 @@ window.addEventListener('unhandledrejection', e => {
     if (!hits.length) break;
     if (!replaceAt(hits[0], index)) break;
     n++;
-    // 바꿀 말이 찾을 말을 품고 있으면 끝없이 반복되므로 한 바퀴만 돕니다.
     if (findInput.value && replaceInput.value.includes(findInput.value)) break;
    }
    editor.dispatchEvent(new Event('input', { bubbles: true }));
@@ -2542,11 +3270,9 @@ window.addEventListener('unhandledrejection', e => {
   if (e.key === 'Enter') { e.preventDefault(); el === findInput ? findStep(e.shiftKey ? -1 : 1) : doReplace(); }
   if (e.key === 'Escape') { e.preventDefault(); closeFind(); }
  }));
- [optCase, optWhole, optMulti, optNoSpace].forEach(el =>
+ [optCase, optWhole, optMulti, optNoSpace, optPostit, optComment].forEach(el =>
   el.addEventListener('change', () => { hitIndex = -1; countLabel.textContent = ''; }));
 
- // ---- 단축키 ----------------------------------------------------------------
- // Ctrl+Z / X / C / V / A / Del 은 브라우저 기본 동작이 이미 맞으므로 가로채지 않습니다.
  document.addEventListener('keydown', e => {
   const ctrl = e.ctrlKey || e.metaKey;
   const k = e.key.toLowerCase();
@@ -2607,7 +3333,7 @@ window.addEventListener('unhandledrejection', e => {
 #roll20-notepad-mock .utility-row input[type="checkbox"]:focus-visible { outline:2px solid color-mix(in srgb,var(--accent,#e46f68) 45%,transparent); outline-offset:1px; }
 #roll20-notepad-mock .utility-float { display:none; position:absolute; z-index:60; right:14px; bottom:44px; width:220px; padding:10px; border:1px solid var(--theme-color,#8a8091); border-radius:10px; background:light-dark(#fffef9,#2f2938); box-shadow:0 12px 28px color-mix(in srgb,var(--theme-color,#8a8091) 30%,transparent); }
 #roll20-notepad-mock .utility-float.open { display:block; }
-#roll20-notepad-mock .utility-float textarea { width:100%; min-height:110px; resize:both; border:0; outline:0; background:transparent; color:inherit; font:inherit; }
+#roll20-notepad-mock .utility-float textarea { width:100%; min-height:110px; resize:both; border:0; outline:0; background:transparent; color:inherit; font:inherit; white-space:pre-wrap; word-break:keep-all; overflow-wrap:break-word; }
 #roll20-notepad-mock .utility-float-actions { display:flex; justify-content:flex-end; gap:5px; margin-top:6px; }
 #roll20-notepad-mock .postit-head { display:flex; justify-content:flex-end; align-items:center; gap:5px; position:relative; min-height:24px; cursor:move; touch-action:none; }
 #roll20-notepad-mock .postit-opacity { width:56px; height:16px; margin:0 auto 0 2px; background:transparent; cursor:pointer; }
@@ -2624,7 +3350,7 @@ window.addEventListener('unhandledrejection', e => {
 #roll20-notepad-mock .utility-line-comment button i { font-size:14px; pointer-events:none; }
 #roll20-notepad-mock .utility-line-comment-row { display:none; width:100%; box-sizing:border-box; margin:2px 0 2px -5px; padding-left:1em; white-space:normal; }
 #roll20-notepad-mock .utility-line-comment.open .utility-line-comment-row { display:block; }
-#roll20-notepad-mock .utility-line-comment-body { display:inline; min-width:24px; min-height:20px; outline:0; white-space:pre-wrap; overflow-wrap:anywhere; color:var(--accent,#e46f68); }
+#roll20-notepad-mock .utility-line-comment-body { display:inline; min-width:24px; min-height:20px; outline:0; white-space:pre-wrap; word-break:keep-all; overflow-wrap:break-word; color:var(--accent,#e46f68); }
 #roll20-notepad-mock #mock-editor > .utility-bookmark::after { content:""; display:inline-block; width:9px; height:13px; margin-left:6px; vertical-align:-1px; background:var(--accent,#e46f68); clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%); pointer-events:none; }
 #roll20-notepad-mock .bookmark-box { width:260px; }
 #roll20-notepad-mock .bookmark-head { display:flex; justify-content:flex-end; min-height:20px; }
@@ -2718,8 +3444,6 @@ window.addEventListener('unhandledrejection', e => {
   if (!it.builtin) view.setAttribute('useragent', MOBILE_UA);
   view.setAttribute('partition', 'persist:subview');
   view.setAttribute('allowpopups', 'true');
-  // dom-ready 전에는 executeJavaScript 를 호출하면 (동기) 예외가 납니다.
-  // 준비 여부를 플래그로 남겨, 감시 코드가 이 시점을 넘기지 않게 합니다.
   view.dataset.ready = 'false';
   view.addEventListener('dom-ready', () => { view.dataset.ready = 'true'; }, { once: true });
   panel.replaceChildren(view);
@@ -2732,20 +3456,34 @@ window.addEventListener('unhandledrejection', e => {
  function toggle(it) { const side=it.side==='right'?'right':'left'; openItems[side]===it ? closePanel(side) : openPanel(it); }
 
  function renderButtons() {
+  const editBtn = document.getElementById('mock-edit');
   const copyBtn = document.getElementById('mock-copy');
-  if (!copyBtn) return;
-  copyBtn.parentNode.querySelectorAll('[data-subview]').forEach(b => b.remove());
-  allItems().forEach((it, i) => {
-   if (!it.name || !it.url || it.on === false) return;
+  if (!editBtn || !copyBtn) return;
+
+  const mode = copyBtn.parentNode;
+  mode.querySelectorAll('[data-subview]').forEach(b => b.remove());
+
+  const enabled = allItems()
+   .map((it, index) => ({ it, index }))
+   .filter(({it}) => it.name && it.url && it.on !== false)
+   .sort((a, b) => {
+    const sideA = a.it.side === 'right' ? 1 : 0;
+    const sideB = b.it.side === 'right' ? 1 : 0;
+    return sideA - sideB || a.index - b.index;
+   });
+
+  enabled.forEach(({it, index}) => {
    const b = document.createElement('button');
    b.type = 'button';
-   b.dataset.subview = String(i);
+   b.dataset.subview = String(index);
+   b.dataset.side = it.side === 'right' ? 'right' : 'left';
    b.textContent = it.name.slice(0, 2);
    b.setAttribute('aria-label', it.builtin ? '메모장' : it.url);
    b.setAttribute('aria-pressed', String(openItems.left===it || openItems.right===it));
    b.addEventListener('click', () => toggle(it));
-   copyBtn.parentNode.insertBefore(b, copyBtn);
+   mode.insertBefore(b, copyBtn);
   });
+
   if (typeof renderMockDesign === 'function') { try { renderMockDesign(); } catch {} }
   renderUtilityButtons();
  }
@@ -2870,7 +3608,6 @@ function makeRow(it, list) {
   const anchor = document.getElementById('mock-style-preview')?.closest('.organizer-menu-row');
   if (!anchor || document.getElementById('subview-list')) return;
 
-  // 제목과 목록을 한 덩어리로 묶어, 사이에 구분선이 생기지 않게 합니다.
   const block = document.createElement('div');
   block.className = 'organizer-menu-row subview-block';
 
