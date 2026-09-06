@@ -1,0 +1,81 @@
+{
+  "name": "trpg-organizer",
+  "version": "0.1.0",
+  "description": "TRPG Organizer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "npm run check && electron-builder --win nsis --publish never",
+    "dist:mac": "npm run check && electron-builder --mac dmg zip --publish never",
+    "check": "node scripts/preflight.js"
+  },
+  "devDependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "pub.naru.trpgorganizer",
+    "productName": "TRPG Organizer",
+    "files": [
+      "main.js",
+      "preload.js",
+      "chat-sender.js",
+      "updater.js",
+      "index.html",
+      "subview-notepad.html",
+      "assets/**",
+      "node_modules/**/*",
+      "mac-chat-bridge.js",
+      "help.html"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/cherries.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "extraResources": [
+        "win-bridge.ps1"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "OHgolgyeo",
+        "repo": "TRPG-Organizer"
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.utilities",
+      "identity": null,
+      "hardenedRuntime": false,
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OHgolgyeo/TRPG-Organizer.git"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  }
+}

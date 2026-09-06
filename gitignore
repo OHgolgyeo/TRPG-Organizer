@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.log
+
+# 사용자 보정값 (%APPDATA% 에 저장되므로 저장소에는 들어오지 않지만 혹시 몰라)
+roll20-organizer-settings.json
