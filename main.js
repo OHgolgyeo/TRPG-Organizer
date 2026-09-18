@@ -17,7 +17,94 @@ const sender = new ChatSender();
 let win;
 let helpWin = null;
 let lastHeight = 720;
+let lastExpandedBounds = null;
+let lastMinimumSize = [360, 44];
+const COLLAPSED_ICON_SIZE = 84;
 let activeSubviewCount = 0;
+let isIconCollapsed = false;
+
+// Windows IME는 BrowserWindow마다 입력 컨텍스트가 따로 잡힐 수 있습니다.
+// 메인 창에서 한글 우선을 한 번 적용했더라도 환경설정/스타일/자료창 같은 자식 창을
+// 열면 그 창이 영문(A) 상태로 시작할 수 있으므로, 창별로 최초 1회만 한글 우선을 요청합니다.
+// 같은 창 안에서 본문 -> 코멘트처럼 포커스만 이동할 때는 재요청하지 않아
+// 한/영 상태가 반복 요청 때문에 뒤집히는 문제도 막습니다.
+const koreanImeWindowState = new WeakMap();
+async function requestKoreanImeForWindow(targetWindow) {
+  if (process.platform !== 'win32') return { ok: true, skipped: true };
+  if (!targetWindow || targetWindow.isDestroyed()) return { ok: false, error: 'window-unavailable' };
+
+  const now = Date.now();
+  let state = koreanImeWindowState.get(targetWindow);
+  if (!state) {
+    state = { requestedAt: 0, promise: null, primed: false };
+    koreanImeWindowState.set(targetWindow, state);
+  }
+  if (state.promise) return state.promise;
+  if (state.primed) return { ok: true, skipped: true, reason: 'window-already-primed' };
+  if (now - state.requestedAt < 1200) return { ok: true, skipped: true, reason: 'debounced' };
+
+  state.requestedAt = now;
+  const handle = targetWindow.getNativeWindowHandle();
+  const hwnd = handle.length === 8 ? handle.readBigUInt64LE(0) : BigInt(handle.readUInt32LE(0));
+  state.promise = Promise.resolve(sender.preferKorean(hwnd))
+    .then(result => {
+      // 실패한 경우에는 다음 포커스 때 다시 시도할 수 있도록 primed로 잠그지 않습니다.
+      state.primed = result?.ok !== false;
+      return result;
+    })
+    .catch(error => {
+      state.primed = false;
+      throw error;
+    })
+    .finally(() => { state.promise = null; });
+  return state.promise;
+}
+
+function requestKoreanImeOnce() {
+  return requestKoreanImeForWindow(win);
+}
+
+function primeKoreanImeAfterFocus(targetWindow, delay = 140) {
+  if (process.platform !== 'win32' || !targetWindow || targetWindow.isDestroyed()) return;
+  setTimeout(() => {
+    if (!targetWindow || targetWindow.isDestroyed() || !targetWindow.isFocused()) return;
+    requestKoreanImeForWindow(targetWindow).catch(() => {});
+  }, delay);
+}
+
+function roundedWindowShape(width, height, radius = 12) {
+  const w = Math.max(1, Math.round(Number(width) || 1));
+  const h = Math.max(1, Math.round(Number(height) || 1));
+  const r = Math.max(0, Math.min(Math.round(radius), Math.floor(w / 2), Math.floor(h / 2)));
+  if (!r) return [{ x:0, y:0, width:w, height:h }];
+  const rects = [];
+  if (h > r * 2) rects.push({ x:0, y:r, width:w, height:h - r * 2 });
+  for (let y = 0; y < r; y++) {
+    const dy = r - y - 0.5;
+    const inset = Math.max(0, Math.ceil(r - Math.sqrt(Math.max(0, r * r - dy * dy))));
+    const rowWidth = Math.max(1, w - inset * 2);
+    rects.push({ x:inset, y, width:rowWidth, height:1 });
+    const bottomY = h - 1 - y;
+    if (bottomY !== y) rects.push({ x:inset, y:bottomY, width:rowWidth, height:1 });
+  }
+  return rects;
+}
+
+function applyWindowShape() {
+  if (!win || win.isDestroyed() || process.platform === 'darwin' || typeof win.setShape !== 'function') return;
+  try {
+    // 아이콘 접기 모드에서는 OS 모양 마스크를 제거합니다. 투명 PNG의 픽셀 알파를
+    // Chromium/Windows 합성기가 그대로 표시하게 해야 사각/흰 배경이 생기지 않습니다.
+    if (isIconCollapsed || win.isFullScreen()) {
+      win.setShape([]);
+      return;
+    }
+    const [width, height] = win.getSize();
+    win.setShape(roundedWindowShape(width, height, 12));
+  } catch (error) {
+    console.warn('[window-shape]', error?.message || error);
+  }
+}
 
 function createWindow() {
   win = new BrowserWindow({
@@ -27,8 +114,14 @@ function createWindow() {
     minHeight: 44,
     frame: false,
     autoHideMenuBar: true,
-    resizable: true,
-    backgroundColor: '#fbf9fd',
+    // frameless 창의 Windows 네이티브 resize border와 커스텀 서브뷰 resize가
+    // 서로 다른 레이어처럼 경쟁하지 않도록 사용자 네이티브 리사이즈는 끕니다.
+    // 창 크기 변경은 index.html의 커스텀 핸들 -> win:resize IPC로 계속 가능합니다.
+    resizable: false,
+    roundedCorners: true,
+    transparent: true,
+    backgroundColor: '#00000000',
+    backgroundMaterial: 'none', // Windows 11: Mica/Acrylic 기본값이 transparent와 충돌해 순수 투명 대신 시스템 배경색이 비치는 걸 방지
     ...(process.platform === 'darwin' ? {} : { icon: path.join(__dirname, 'assets', 'cherries.ico') }),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -41,6 +134,9 @@ function createWindow() {
 
   win.loadFile('index.html');
   try { win.webContents.session.setSpellCheckerLanguages(['ko']); } catch (e) { console.warn('[spellchecker]', e.message); }
+  win.on('resize', applyWindowShape);
+  win.on('enter-full-screen', applyWindowShape);
+  win.on('leave-full-screen', () => setImmediate(applyWindowShape));
 
   win.webContents.on('before-input-event', (event, input) => {
     if (input.type !== 'keyDown') return;
@@ -62,6 +158,7 @@ function createWindow() {
   win.webContents.once('did-finish-load', () => {
     setTimeout(async () => {
       if (!win || win.isDestroyed()) return;
+      applyWindowShape();
       win.show();
       win.focus();
       await win.webContents.executeJavaScript(`
@@ -79,6 +176,9 @@ function createWindow() {
           selection.addRange(range);
         })()
       `).catch(() => {});
+      // renderer의 focusin 요청이 놓쳐도 창 포커스가 완전히 정착한 뒤 한 번 보강합니다.
+      // 창별 상태를 공유하므로 renderer 요청이 이미 성공했다면 자동으로 건너뜁니다.
+      primeKoreanImeAfterFocus(win, 180);
     }, 650);
   });
 
@@ -118,10 +218,15 @@ function createWindow() {
       x, y,
       parent: win,
       modal: false,
-      alwaysOnTop: true,
+      // 분리 패널은 메인 창의 항상 위 상태를 그대로 따릅니다.
+      // parent 관계만으로 메인 창 위에는 유지되므로, 고정 모드가 꺼진 상태에서
+      // 다른 앱 위까지 떠버리지 않도록 child 자체를 강제로 topmost로 만들지 않습니다.
+      alwaysOnTop: !!win?.isAlwaysOnTop?.(),
       frame: false,
+      roundedCorners: true,
       transparent: true,        // 패널 바깥은 완전히 투명 — 그림자는 패널 CSS 가 그림
       backgroundColor: '#00000000',
+      backgroundMaterial: 'none', // Windows 11 Mica/Acrylic 기본값과 충돌 방지
       hasShadow: false,
       resizable: false,
       skipTaskbar: true,
@@ -132,15 +237,39 @@ function createWindow() {
   });
 
   win.webContents.on('did-create-window', (child) => {
+    const applyChildShape = () => {
+      if (child.isDestroyed() || process.platform === 'darwin' || typeof child.setShape !== 'function') return;
+      try {
+        const [width, height] = child.getSize();
+        child.setShape(roundedWindowShape(width, height, 11));
+      } catch (error) {
+        console.warn('[child-window-shape]', error?.message || error);
+      }
+    };
+
+    try { child.setBackgroundColor('#00000000'); } catch {}
+    try { child.setBackgroundMaterial?.('none'); } catch {}
+    child.on('resize', applyChildShape);
+
+    const syncWithMain = () => {
+      if (child.isDestroyed() || !win || win.isDestroyed()) return;
+      const pinned = win.isAlwaysOnTop();
+      child.setAlwaysOnTop(pinned, pinned ? 'pop-up-menu' : undefined);
+      // parent: win 이므로 pinned=false 여도 메인 창 앞에는 유지됩니다.
+      // 다만 다른 앱보다 위에 남지는 않습니다.
+    };
+
     const activate = () => {
       if (child.isDestroyed()) return;
-      child.setAlwaysOnTop(true, 'pop-up-menu');
+      syncWithMain();
       child.moveTop();
       child.focus();
+      primeKoreanImeAfterFocus(child, 160);
     };
-    if (child.isVisible()) activate();
-    child.once('ready-to-show', () => { child.show(); activate(); });
-    child.once('show', activate);
+
+    if (child.isVisible()) { applyChildShape(); activate(); }
+    child.once('ready-to-show', () => { applyChildShape(); child.show(); activate(); });
+    child.once('show', () => { applyChildShape(); activate(); });
   });
 
 }
@@ -285,12 +414,14 @@ ipcMain.handle('tools:devtools', () => win?.webContents.openDevTools({ mode: 'de
 ipcMain.handle('tools:help', () => { openHelpWindow(); return true; });
 ipcMain.handle('tools:get-enter', () => !!sender.settings.enter);
 ipcMain.handle('tools:set-enter', (_e, v) => { sender.save({ enter: !!v }); return !!v; });
-ipcMain.handle('input:prefer-korean', async () => {
-  if (process.platform !== 'win32') return { ok: true, skipped: true };
-  if (!win || win.isDestroyed()) return { ok: false, error: 'window-unavailable' };
-  const handle = win.getNativeWindowHandle();
-  const hwnd = handle.length === 8 ? handle.readBigUInt64LE(0) : BigInt(handle.readUInt32LE(0));
-  return sender.preferKorean(hwnd);
+ipcMain.handle('input:prefer-korean', () => requestKoreanImeOnce());
+ipcMain.handle('clipboard:write-text', (_e, text) => {
+  try {
+    clipboard.writeText(String(text ?? ''));
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, error: error?.message || String(error) };
+  }
 });
 
 const EDIT_ACTIONS = ['undo', 'redo', 'cut', 'copy', 'paste', 'delete', 'selectAll'];
@@ -303,7 +434,11 @@ ipcMain.handle('update:state', () => getUpdateState());
 ipcMain.handle('update:check', () => checkForUpdatesManually());
 ipcMain.handle('update:install', () => installUpdateNow());
 ipcMain.handle('app:open-external', async (_e, url) => {
-  if (url !== 'https://x.com/5golgyeo') return { ok: false };
+  const allowed = new Set([
+    'https://x.com/5golgyeo',
+    'https://kor.pngtree.com/freepng/dice_5629572.html?sol=downref&id=bef',
+  ]);
+  if (!allowed.has(url)) return { ok: false };
   await shell.openExternal(url);
   return { ok: true };
 });
@@ -326,18 +461,20 @@ ipcMain.handle('file:save-json', async (_e, payload = {}) => {
 });
 
 ipcMain.on('win:widen', (_e, request) => {
-  if (!win) return;
+  if (!win || win.isDestroyed()) return;
   const delta = Math.round(Number(typeof request === 'object' ? request?.delta : request) || 0);
   const side = typeof request === 'object' ? request?.side : 'right';
-  if (!delta) return;
+  const countDelta = Math.round(Number(typeof request === 'object' ? request?.countDelta : 0) || 0);
+  const requestedMinimum = Math.round(Number(typeof request === 'object' ? request?.minimumWidth : 0) || 0);
+  if (!delta && !countDelta && !requestedMinimum) return;
 
-  if (delta > 0) activeSubviewCount = Math.min(2, activeSubviewCount + 1);
-  else activeSubviewCount = Math.max(0, activeSubviewCount - 1);
+  if (countDelta) activeSubviewCount = Math.max(0, Math.min(2, activeSubviewCount + countDelta));
 
-  const minimumWidth = 360 + 300 * activeSubviewCount;
+  const minimumWidth = Math.max(360, requestedMinimum || (360 + 300 * activeSubviewCount));
   const [, currentMinHeight] = win.getMinimumSize();
   win.setMinimumSize(minimumWidth, currentMinHeight || 44);
 
+  if (!delta) return;
   const bounds = win.getBounds();
   const width = Math.max(minimumWidth, bounds.width + delta);
   const applied = width - bounds.width;
@@ -349,11 +486,24 @@ ipcMain.on('win:widen', (_e, request) => {
   });
 });
 
+ipcMain.on('win:min-width', (_e, value) => {
+  if (!win || win.isDestroyed()) return;
+  const minimumWidth = Math.max(360, Math.round(Number(value) || 360));
+  const [, currentMinHeight] = win.getMinimumSize();
+  win.setMinimumSize(minimumWidth, currentMinHeight || 44);
+});
+
 ipcMain.on('win:resize', (_e, request = {}) => {
   if (!win || win.isDestroyed()) return;
 
   const bounds = win.getBounds();
-  const minimumWidth = 360 + 300 * activeSubviewCount;
+  const [nativeMinimumWidth] = win.getMinimumSize();
+  const requestedMinimum = Math.round(Number(request.minimumWidth) || 0);
+  const minimumWidth = Math.max(360, requestedMinimum || nativeMinimumWidth || (360 + 300 * activeSubviewCount));
+  if (requestedMinimum && requestedMinimum !== nativeMinimumWidth) {
+    const [, currentMinHeight] = win.getMinimumSize();
+    win.setMinimumSize(minimumWidth, currentMinHeight || 44);
+  }
   const width = Math.max(
     minimumWidth,
     Math.round(Number(request.width) || bounds.width)
@@ -375,21 +525,61 @@ ipcMain.on('win:resize', (_e, request = {}) => {
 
 ipcMain.on('win:close', () => win?.close());
 ipcMain.on('win:always-on-top', (_e, v) => {
-  if (!win) return;
-  win.setAlwaysOnTop(!!v);   // 본 창은 'floating' 단계 (레벨 지정 없는 기본값)
+  if (!win || win.isDestroyed()) return;
+  const pinned = !!v;
+  win.setAlwaysOnTop(pinned);   // 본 창은 기본 always-on-top 레벨 사용
   win.getChildWindows().forEach((child) => {
     if (child.isDestroyed()) return;
-    child.setAlwaysOnTop(true, 'pop-up-menu');
-    child.moveTop();
+    // 환경설정/명령어/스타일 분리 패널도 메인 창의 고정 상태를 그대로 따릅니다.
+    child.setAlwaysOnTop(pinned, pinned ? 'pop-up-menu' : undefined);
+    if (pinned) child.moveTop();
   });
+});
+ipcMain.on('win:move-by', (_e, request = {}) => {
+  if (!win || win.isDestroyed()) return;
+  const dx = Math.round(Number(request.dx) || 0);
+  const dy = Math.round(Number(request.dy) || 0);
+  if (!dx && !dy) return;
+  const bounds = win.getBounds();
+  win.setPosition(bounds.x + dx, bounds.y + dy, false);
 });
 ipcMain.on('win:opacity', (_e, v) => win?.setOpacity(Math.min(1, Math.max(0.2, Number(v) || 1))));
 ipcMain.on('win:full-screen', (_e, v) => win?.setFullScreen(!!v));
 ipcMain.on('win:collapsed', (_e, v) => {
-  if (!win) return;
-  const [w, h] = win.getSize();
-  if (v) { lastHeight = h; win.setSize(w, 44); }
-  else { win.setSize(w, lastHeight); }
+  if (!win || win.isDestroyed()) return;
+  const collapsed = !!v;
+  isIconCollapsed = collapsed;
+
+  if (collapsed) {
+    win.setBackgroundColor('#00000000');
+    applyWindowShape();
+    if (!lastExpandedBounds) {
+      lastExpandedBounds = win.getBounds();
+      lastMinimumSize = win.getMinimumSize();
+      lastHeight = lastExpandedBounds.height;
+    }
+    win.setMinimumSize(COLLAPSED_ICON_SIZE, COLLAPSED_ICON_SIZE);
+    win.setBounds({
+      x: lastExpandedBounds.x,
+      y: lastExpandedBounds.y,
+      width: COLLAPSED_ICON_SIZE,
+      height: COLLAPSED_ICON_SIZE,
+    });
+    win.setBackgroundColor('#00000000');
+    return;
+  }
+
+  const minimumWidth = Math.max(360, Number(lastMinimumSize?.[0]) || (360 + 300 * activeSubviewCount));
+  const minimumHeight = Math.max(44, Number(lastMinimumSize?.[1]) || 44);
+  win.setMinimumSize(minimumWidth, minimumHeight);
+  if (lastExpandedBounds) {
+    win.setBounds(lastExpandedBounds);
+    lastExpandedBounds = null;
+  } else {
+    const [w] = win.getSize();
+    win.setSize(Math.max(minimumWidth, w), Math.max(240, lastHeight));
+  }
+  setImmediate(applyWindowShape);
 });
 
 // =============================================================================

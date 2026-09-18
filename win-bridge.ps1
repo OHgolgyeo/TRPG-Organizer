@@ -146,6 +146,7 @@ function Resolve-Target($windowHandle, $keyword, $excludePid) {
 
 $script:AutoTargetHwnd = $null
 $script:AutoTargetTitle = ''
+$script:AutoTargetElement = $null
 
 function Find-BestChatInputInWindow($w) {
   try {
@@ -153,9 +154,16 @@ function Find-BestChatInputInWindow($w) {
     $root = [System.Windows.Automation.AutomationElement]::FromHandle($h)
     if ($null -eq $root) { return $null }
 
+    # TrueCondition으로 전체 트리를 훑으면(수백~수천개 요소를 하나씩 속성 조회) 매 전송마다
+    # 눈에 보이게 느려진다. Edit 컨트롤만 서버 쪽에서 걸러 받아오도록 조건을 지정해
+    # 실제로 순회/조회하는 요소 수를 크게 줄인다 (최종 매칭 결과는 동일).
+    $editCondition = New-Object System.Windows.Automation.PropertyCondition(
+      [System.Windows.Automation.AutomationElement]::ControlTypeProperty,
+      [System.Windows.Automation.ControlType]::Edit
+    )
     $all = $root.FindAll(
       [System.Windows.Automation.TreeScope]::Descendants,
-      [System.Windows.Automation.Condition]::TrueCondition
+      $editCondition
     )
 
     $windowHeight = [Math]::Max(1, ($w.bottom - $w.top))
@@ -290,6 +298,7 @@ function Get-CachedAutoWindow($excludePid) {
 function Clear-AutoTargetCache {
   $script:AutoTargetHwnd = $null
   $script:AutoTargetTitle = ''
+  $script:AutoTargetElement = $null
 }
 
 function Do-UiaAutoSend($pressEnter, $excludePid) {
@@ -306,21 +315,53 @@ function Do-UiaAutoSend($pressEnter, $excludePid) {
   $bestScore = -99999
   $usedCache = $false
 
-  $cachedWindow = Get-CachedAutoWindow $excludePid
-  if ($null -ne $cachedWindow) {
-    $candidate = Find-BestChatInputInWindow $cachedWindow
-    if ($null -ne $candidate) {
-      $bestWindow = $cachedWindow
-      $best = $candidate
-      $bestScore = [int]$candidate.score
-      $usedCache = $true
+  # 이전에 찾아둔 채팅 입력 요소가 아직 그대로 살아있으면(대부분의 재전송이 여기
+  # 해당) 창 전체를 다시 훑는 과정을 완전히 건너뛴다. 이게 반복 전송 속도를
+  # 좌우하는 핵심 지점이다 — 캐시된 "창"만 갖고도 매번 전체 트리를 다시 훑던
+  # 이전 방식이 체감 지연(약 3초)의 실제 원인이었다.
+  if ($null -ne $script:AutoTargetElement) {
+    $elementStillValid = $false
+    try {
+      $cur = $script:AutoTargetElement.Current
+      $elementStillValid = [bool]$cur.IsEnabled -and [bool]$cur.IsKeyboardFocusable -and -not [bool]$cur.IsOffscreen
+    }
+    catch { $elementStillValid = $false }
+
+    if ($elementStillValid) {
+      $cachedWindowForElement = Get-CachedAutoWindow $excludePid
+      if ($null -ne $cachedWindowForElement) {
+        $bestWindow = $cachedWindowForElement
+        $best = @{ element = $script:AutoTargetElement }
+        $bestScore = 999
+        $usedCache = $true
+      }
+      else {
+        $script:AutoTargetElement = $null
+      }
     }
     else {
-      Clear-AutoTargetCache
+      $script:AutoTargetElement = $null
     }
   }
-  elseif ($script:AutoTargetHwnd) {
-    Clear-AutoTargetCache
+
+  if ($null -eq $bestWindow) {
+    $cachedWindow = Get-CachedAutoWindow $excludePid
+    if ($null -ne $cachedWindow) {
+      $candidate = Find-BestChatInputInWindow $cachedWindow
+      if ($null -ne $candidate) {
+        $bestWindow = $cachedWindow
+        $best = $candidate
+        $bestScore = [int]$candidate.score
+        $usedCache = $true
+        $script:AutoTargetElement = $candidate.element
+      }
+      else {
+        Clear-AutoTargetCache
+      }
+    }
+    elseif ($script:AutoTargetHwnd) {
+      Clear-AutoTargetCache
+    }
   }
 
   if ($null -eq $bestWindow) {
@@ -342,6 +383,7 @@ function Do-UiaAutoSend($pressEnter, $excludePid) {
     if ($null -ne $bestWindow) {
       $script:AutoTargetHwnd = [string]$bestWindow.handle
       $script:AutoTargetTitle = [string]$bestWindow.title
+      $script:AutoTargetElement = $best.element
     }
   }
 

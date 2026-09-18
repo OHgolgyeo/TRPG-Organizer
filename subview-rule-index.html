@@ -1,0 +1,2412 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=format_bold,format_color_text,format_italic,format_list_numbered,format_paragraph,format_strikethrough,format_underlined,search,table">
+<title>룰</title>
+
+<style>
+:root{
+  --theme:#58a783;
+  --accent:#e46f68;
+  --paper:#fffef9;
+  --ink:#3d6255;
+  --line:#bddfca;
+  --soft:#eaf5ee;
+  --sidebar:117px;
+  color-scheme:light;
+}
+
+*{
+  box-sizing:border-box;
+  scrollbar-width:thin;
+  scrollbar-color:var(--theme)
+    color-mix(in srgb,var(--theme) 14%,transparent);
+}
+
+*::-webkit-scrollbar{
+  width:9px;
+  height:9px;
+}
+*::-webkit-scrollbar-track{
+  background:color-mix(in srgb,var(--theme) 14%,transparent);
+  border-radius:9px;
+}
+*::-webkit-scrollbar-thumb{
+  background:var(--theme);
+  border:2px solid transparent;
+  background-clip:padding-box;
+  border-radius:9px;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  margin:0;
+  overflow:hidden;
+}
+
+body{
+  display:flex;
+  flex-direction:column;
+  background:var(--paper);
+  color:var(--ink);
+  font:14px/1.7 Pretendard,"Noto Sans KR",sans-serif;
+}
+
+/* =========================================================
+   상단 서식
+   ========================================================= */
+
+.toolbar{
+  flex:none;
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  padding:6px 8px;
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--theme) 9%,var(--paper));
+}
+
+.toolbar-group{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  margin-left:auto;
+  gap:3px;
+}
+
+.toolbar-group > button{
+  width:28px;
+  min-width:28px;
+  height:28px;
+  flex:0 0 28px;
+}
+
+button{
+  font:inherit;
+}
+
+.toolbar button{
+  height:28px;
+  min-width:28px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  line-height:1;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:12px;
+  cursor:pointer;
+}
+
+.toolbar button:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+.material-symbols-outlined{
+  font-family:'Material Symbols Outlined';
+  font-weight:normal;
+  font-style:normal;
+  font-size:20px;
+  line-height:1;
+  letter-spacing:normal;
+  text-transform:none;
+  display:inline-block;
+  white-space:nowrap;
+  word-wrap:normal;
+  direction:ltr;
+  -webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:'liga';
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  pointer-events:none;
+}
+
+.color-tool-wrap{
+  position:relative;
+  width:28px;
+  min-width:28px;
+  height:28px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:var(--paper);
+  color:var(--ink);
+  cursor:pointer;
+  overflow:hidden;
+}
+
+.color-tool-wrap:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+}
+
+.color-tool-wrap::after{
+  content:'';
+  position:absolute;
+  left:6px;
+  right:6px;
+  bottom:3px;
+  height:2px;
+  border-radius:2px;
+  background:var(--picked-color,var(--ink));
+  pointer-events:none;
+}
+
+.color-tool{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  padding:0;
+  border:0;
+  opacity:0;
+  cursor:pointer;
+}
+
+.sidebar-search{
+  flex:none;
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 24px;
+  align-items:center;
+  gap:2px;
+  padding:6px;
+  border-right:1px solid var(--line);
+  border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent);
+}
+
+.sidebar-search input{
+  width:100%;
+  min-width:0;
+  height:28px;
+  padding:0 6px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  outline:0;
+  background:var(--paper);
+  color:var(--ink);
+  font:11px Pretendard,"Noto Sans KR",sans-serif;
+}
+
+.sidebar-search input:focus{
+  border-color:var(--theme);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--theme) 14%,transparent);
+}
+
+.sidebar-search input::placeholder{
+  color:color-mix(in srgb,var(--ink) 48%,transparent);
+}
+
+.sidebar-search .search-button{
+  width:24px;
+  min-width:24px;
+  height:28px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  background:transparent;
+  color:var(--theme);
+  font-size:17px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.sidebar-search .search-button:hover{
+  border:0;
+  background:transparent;
+  color:var(--accent);
+}
+
+
+/* =========================================================
+   본문
+   ========================================================= */
+
+.workspace{
+  flex:1;
+  min-height:0;
+  display:flex;
+}
+
+/* 룰북 목록 */
+
+.sidebar{
+  width:var(--sidebar);
+  min-width:var(--sidebar);
+  max-width:var(--sidebar);
+  flex:0 0 var(--sidebar);
+  display:flex;
+  flex-direction:column;
+  border-right:0;
+  background:color-mix(in srgb,var(--theme) 12%,var(--paper));
+}
+
+.sidebar-title{
+  flex:none;
+  height:42px;
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:flex-start;
+  gap:3px;
+  padding:5px 7px 5px 10px;
+  border-bottom:1px solid var(--line);
+  background:transparent;
+  font-size:12px;
+  font-weight:700;
+}
+
+.sidebar-title > span{
+  padding:0;
+  font-size:17px;
+}
+
+.icon-button{
+  width:24px;
+  min-width:24px;
+  height:24px;
+  padding:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  border-radius:5px;
+  background:transparent;
+  color:var(--theme);
+  font-size:16px;
+  line-height:1;
+  cursor:pointer;
+}
+
+.icon-button i{
+  display:block;
+  line-height:1;
+}
+
+.icon-button:hover{
+  background:var(--soft);
+  color:var(--accent);
+}
+
+.category-create-row{
+  width:100%;
+  margin-bottom:3px;
+}
+
+.category-create-row input{
+  display:block;
+  width:100%;
+  height:31px;
+  padding:0 7px;
+  outline:0;
+  border:1px solid var(--theme);
+  border-radius:6px;
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;
+  font-size:12px;
+}
+
+.category-create-row input:focus{
+  border-color:var(--theme);
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--theme) 16%,transparent);
+}
+
+.category-list{
+  flex:1;
+  min-height:0;
+  overflow:auto;
+  padding:6px;
+  border-right:1px solid var(--line);
+}
+
+.category{
+  display:flex;
+  align-items:center;
+  gap:2px;
+  width:100%;
+  margin-bottom:3px;
+  border-radius:6px;
+}
+
+.category-rename-input{
+  flex:1;
+  min-width:0;
+  height:31px;
+  padding:0 7px;
+  outline:0;
+  border:1px solid var(--theme);
+  border-radius:6px;
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;
+  font-size:12px;
+}
+
+.category-rename-input:focus{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--theme) 16%,transparent);
+}
+
+.category-main{
+  flex:1;
+  min-width:0;
+  height:31px;
+  padding:0 7px;
+  font-size:12px;
+  overflow:hidden;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  cursor:pointer;
+}
+
+.category-main:hover{
+  background:color-mix(in srgb,var(--theme) 9%,var(--paper));
+}
+
+.category.active .category-main{
+  background:color-mix(in srgb,var(--theme) 18%,var(--paper));
+  color:var(--theme);
+  font-weight:700;
+}
+
+.category-menu{
+  flex:none;
+  width:20px;
+  height:27px;
+  padding:0;
+  border:0;
+  border-radius:5px;
+  background:transparent;
+  color:color-mix(in srgb,var(--ink) 60%,transparent);
+  cursor:pointer;
+}
+
+.category-menu:hover{
+  color:var(--accent);
+}
+
+/* 오른쪽 */
+
+.content-area{
+  flex:1;
+  min-width:0;
+  min-height:0;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+
+.tool-panel{
+  display:none;
+  position:absolute;
+  z-index:30;
+  top:38px;
+  padding:7px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--paper);
+  box-shadow:0 12px 28px color-mix(in srgb,var(--theme) 28%,transparent);
+}
+
+.tool-panel.open{
+  display:block;
+}
+
+.tool-menu{
+  width:174px;
+}
+
+.tool-menu button{
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:34px;
+  padding:6px 9px;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  cursor:pointer;
+}
+
+.tool-menu button:hover{
+  background:var(--soft);
+}
+
+#list-panel{
+  width:186px;
+}
+
+#heading-panel [data-block="h1"]{font-size:25px}
+#heading-panel [data-block="h2"]{font-size:20px}
+#heading-panel [data-block="h3"]{font-size:17px}
+#heading-panel [data-block="h4"]{font-size:14px}
+#heading-panel [data-block="h5"]{font-size:12px}
+#heading-panel [data-block="h6"]{font-size:11px}
+#heading-panel [data-block="p"]{
+  border-left:3px solid var(--accent);
+  background:var(--soft);
+}
+
+.tabbar{
+  flex:none;
+  height:38px;
+  display:flex;
+  align-items:flex-end;
+  gap:3px;
+  padding:5px 7px 0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--theme) 3%,var(--paper));
+}
+
+.tab{
+  flex:none;
+  max-width:140px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  border:1px solid transparent;
+  border-bottom:0;
+  border-radius:7px 7px 0 0;
+  background:transparent;
+}
+
+.tab.active{
+  border-color:var(--line);
+  background:var(--paper);
+}
+
+.tab-name{
+  max-width:110px;
+  height:30px;
+  padding:0 9px;
+  overflow:hidden;
+  border:0;
+  background:transparent;
+  color:var(--ink);
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  cursor:pointer;
+}
+
+.tab.active .tab-name{
+  color:var(--theme);
+  font-weight:700;
+}
+
+.tab-close{
+  width:20px;
+  height:25px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:color-mix(in srgb,var(--ink) 50%,transparent);
+  cursor:pointer;
+}
+
+.tab-close:hover{
+  color:var(--accent);
+}
+
+.tab-create{
+  flex:none;
+  width:118px;
+  height:30px;
+  margin-bottom:1px;
+  padding:0 8px;
+  outline:0;
+  border:1px solid var(--theme);
+  border-radius:7px 7px 0 0;
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;
+  font-size:12px;
+}
+
+.tab-create:focus{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--theme) 16%,transparent);
+}
+
+.add-tab{
+  flex:none;
+  width:28px;
+  height:28px;
+  margin-bottom:3px;
+  padding:0;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:var(--theme);
+  font-size:18px;
+  cursor:pointer;
+}
+
+.add-tab:hover{
+  background:var(--soft);
+  color:var(--accent);
+}
+
+/* 에디터 */
+
+.editor-wrap{
+  flex:1;
+  min-height:0;
+  position:relative;
+  display:flex;
+}
+
+#editor{
+  flex:1;
+  min-width:0;
+  min-height:0;
+  padding:16px 18px 40px;
+  overflow:auto;
+  outline:0;
+  white-space:pre-wrap;
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+
+#editor:empty::before{
+  content:'내용을 입력하세요.';
+  color:color-mix(in srgb,var(--theme) 55%,transparent);
+  pointer-events:none;
+}
+
+#editor h1{
+  margin:.45em 0;
+  font-size:1.7em;
+}
+#editor h2{
+  margin:.4em 0;
+  font-size:1.45em;
+}
+#editor h3{
+  margin:.4em 0;
+  font-size:1.25em;
+}
+#editor h4{
+  margin:.35em 0;
+  font-size:1.1em;
+}
+#editor h5{
+  margin:.3em 0;
+  font-size:1em;
+}
+#editor h6{
+  margin:.3em 0;
+  font-size:.9em;
+}
+
+#editor table{
+  margin:8px 0;
+  border-collapse:collapse;
+}
+
+#editor td,
+#editor th{
+  min-width:58px;
+  padding:4px 7px;
+  border:1px solid var(--line);
+}
+
+/* 빈 상태 */
+
+.empty{
+  flex:1;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  color:color-mix(in srgb,var(--ink) 55%,transparent);
+  text-align:center;
+}
+
+.empty.show{
+  display:flex;
+}
+
+.editor-wrap.hidden{
+  display:none;
+}
+
+/* 팝업 메뉴 */
+
+.popup{
+  position:fixed;
+  z-index:100;
+  display:none;
+  min-width:112px;
+  padding:5px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--paper);
+  box-shadow:0 8px 24px
+    color-mix(in srgb,var(--theme) 24%,transparent);
+}
+
+.popup.open{
+  display:block;
+}
+
+.popup button{
+  display:block;
+  width:100%;
+  min-height:30px;
+  padding:4px 8px;
+  border:0;
+  border-radius:5px;
+  background:transparent;
+  color:var(--ink);
+  text-align:left;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.popup button:hover{
+  background:var(--soft);
+}
+
+.popup button.danger{
+  color:var(--accent);
+}
+
+/* 상태 */
+
+.status{
+  position:absolute;
+  right:9px;
+  bottom:6px;
+  padding:1px 5px;
+  border-radius:4px;
+  background:color-mix(in srgb,var(--paper) 85%,transparent);
+  color:color-mix(in srgb,var(--ink) 50%,transparent);
+  font-size:10px;
+  pointer-events:none;
+}
+
+
+</style>
+
+<style id="rule-index-dark-2026">
+:root[data-theme="dark"]{--surface:#171C23;--raised:#1C232C;--hover:#242D38;--field:#151B22;--text2:#B0B8C1;--text3:#7D8793;--accent-soft:#172A46;color-scheme:dark}
+:root[data-theme="dark"] body{background:#11151B;color:#F2F4F6}
+:root[data-theme="dark"] .toolbar{background:#151A21;border-bottom-color:#2B333D}
+:root[data-theme="dark"] .toolbar button,:root[data-theme="dark"] .color-tool-wrap{background:#171C23;border-color:#2B333D;color:#B0B8C1}
+:root[data-theme="dark"] .toolbar button:hover,:root[data-theme="dark"] .color-tool-wrap:hover{background:#172A46;border-color:#4C8DFF;color:#8FB5FF}
+:root[data-theme="dark"] .sidebar{background:#151A21;border-color:#2B333D}
+:root[data-theme="dark"] .sidebar-search input,:root[data-theme="dark"] .category-create-row input,:root[data-theme="dark"] .category-rename-input,:root[data-theme="dark"] .tab-create{background:#151B22;border-color:#3A4654;color:#F2F4F6}
+:root[data-theme="dark"] :is(.sidebar-search input,.category-create-row input,.category-rename-input,.tab-create):focus{border-color:#4C8DFF;box-shadow:0 0 0 3px rgba(76,141,255,.22);outline:none}
+:root[data-theme="dark"] .category-main:hover,:root[data-theme="dark"] .category-menu:hover,:root[data-theme="dark"] .add-tab:hover{background:#242D38}
+:root[data-theme="dark"] .category.active .category-main{background:#172A46;color:#9FBEFF}
+:root[data-theme="dark"] .content-area,:root[data-theme="dark"] .editor-wrap{background:#11151B}
+:root[data-theme="dark"] .tabbar{background:#151A21;border-bottom-color:#2B333D}
+:root[data-theme="dark"] .tab{color:#8B95A1}
+:root[data-theme="dark"] .tab.active{background:#11151B;border-color:#2B333D;color:#F2F4F6}
+:root[data-theme="dark"] .tool-panel,:root[data-theme="dark"] .popup{background:#1C232C;border-color:#3A4654;box-shadow:0 1px 0 rgba(255,255,255,.035),0 10px 28px -12px rgba(0,0,0,.22),0 24px 64px -24px rgba(0,0,0,.16)}
+:root[data-theme="dark"] .tool-menu button,:root[data-theme="dark"] .popup button{color:#F2F4F6}
+:root[data-theme="dark"] .tool-menu button:hover,:root[data-theme="dark"] .popup button:hover{background:#242D38}
+:root[data-theme="dark"] .popup button.danger{color:#FF9A9A}
+:root[data-theme="dark"] #heading-panel [data-block="p"]{background:#172A46;border-left-color:#4C8DFF}
+:root[data-theme="dark"] #editor:empty::before,:root[data-theme="dark"] .status,:root[data-theme="dark"] .sidebar-search input::placeholder{color:#7D8793}
+:root[data-theme="dark"] #editor td,:root[data-theme="dark"] #editor th{border-color:#2B333D}
+:root[data-theme="dark"] *{scrollbar-color:#596472 #14191F}
+:root[data-theme="dark"] *::-webkit-scrollbar-track{background:#14191F}
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb{background:#596472}
+:root[data-theme="dark"] *::-webkit-scrollbar-thumb:hover{background:#7B8794}
+</style>
+
+</head>
+
+<body>
+
+<div class="workspace">
+
+  <aside class="sidebar">
+
+    <div class="sidebar-title">
+      <span>룰 요약</span>
+
+      <button
+        type="button"
+        class="icon-button"
+        id="add-category"
+        aria-label="룰북 추가"
+        title="룰북 추가"
+      ><i class="ph ph-plus" aria-hidden="true"></i></button>
+    </div>
+
+    <div class="category-list" id="category-list"></div>
+
+    <div class="sidebar-search" role="search">
+      <input
+        type="search"
+        id="rule-search-input"
+        placeholder="검색"
+        autocomplete="off"
+        aria-label="룰 요약 검색"
+      >
+      <button
+        type="button"
+        id="rule-search-button"
+        class="search-button"
+        aria-label="검색"
+        title="검색"
+      ><span class="material-symbols-outlined" aria-hidden="true">search</span></button>
+    </div>
+
+  </aside>
+
+
+  <main class="content-area">
+
+    <div class="toolbar">
+
+      <div class="toolbar-group">
+        <button type="button" id="heading" aria-label="제목" title="제목"><span class="material-symbols-outlined" aria-hidden="true">format_paragraph</span></button>
+
+        <button type="button" id="list" aria-label="목록" title="목록"><span class="material-symbols-outlined" aria-hidden="true">format_list_numbered</span></button>
+
+        <button type="button" data-command="bold" aria-label="굵게" title="굵게"><span class="material-symbols-outlined" aria-hidden="true">format_bold</span></button>
+
+        <button type="button" data-command="italic" aria-label="기울임" title="기울임"><span class="material-symbols-outlined" aria-hidden="true">format_italic</span></button>
+
+        <button type="button" data-command="strikeThrough" aria-label="취소선" title="취소선"><span class="material-symbols-outlined" aria-hidden="true">format_strikethrough</span></button>
+
+        <button type="button" data-command="underline" aria-label="밑줄" title="밑줄"><span class="material-symbols-outlined" aria-hidden="true">format_underlined</span></button>
+
+        <label class="color-tool-wrap" id="fore-color-wrap" aria-label="글자색" title="글자색" style="--picked-color:#3d6255"><span class="material-symbols-outlined" aria-hidden="true">format_color_text</span><input type="color" id="fore-color" class="color-tool" value="#3d6255" aria-label="글자색"></label>
+
+        <button type="button" id="table" aria-label="표" title="표"><span class="material-symbols-outlined" aria-hidden="true">table</span></button>
+
+      </div>
+    </div>
+
+    <div id="heading-panel" class="tool-panel tool-menu" role="menu" aria-label="문단 서식">
+      <button type="button" data-block="h1">제목</button>
+      <button type="button" data-block="h2">부제</button>
+      <button type="button" data-block="h3">머리글</button>
+      <button type="button" data-block="h4">부제목</button>
+      <button type="button" data-block="h5">섹션</button>
+      <button type="button" data-block="h6">하위 섹션</button>
+      <button type="button" data-block="p">본문</button>
+    </div>
+
+    <div id="list-panel" class="tool-panel tool-menu" role="menu" aria-label="목록 서식">
+      <button type="button" data-list="insertUnorderedList">글머리 기호 목록</button>
+      <button type="button" data-list="insertOrderedList">번호 매기기 목록</button>
+    </div>
+
+    <div class="tabbar" id="tabbar">
+
+      <button
+        type="button"
+        class="add-tab"
+        id="add-tab"
+        aria-label="탭 추가"
+        title="탭 추가"
+      >＋</button>
+
+    </div>
+
+
+    <div class="empty" id="empty">
+      룰 요약 옆의 + 버튼을 눌러 룰북을 추가해 주세요.
+    </div>
+
+
+    <div class="editor-wrap hidden" id="editor-wrap">
+
+      <div
+        id="editor"
+        contenteditable="true"
+        spellcheck="false"
+      ></div>
+
+      <div class="status" id="status">
+        자동 저장
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+
+<div class="popup" id="category-popup">
+
+  <button type="button" id="rename-category">
+    이름 변경
+  </button>
+
+  <button
+    type="button"
+    id="delete-category"
+    class="danger"
+  >
+    삭제
+  </button>
+
+</div>
+
+
+<script>
+/* =========================================================
+   테마
+   ========================================================= */
+
+const themes = {
+  dark:[
+    '#8B95A1',
+    '#4C8DFF',
+    '#11151B',
+    '#F2F4F6',
+    '#2B333D',
+    '#1A2230'
+  ],
+
+  pastel:[
+    '#58a783',
+    '#e46f68',
+    '#fffef9',
+    '#3d6255',
+    '#bddfca',
+    '#eaf5ee'
+  ],
+
+  pink:[
+    '#d45f8b',
+    '#d45f8b',
+    '#fffefe',
+    '#80576a',
+    '#efcfda',
+    '#fbeef3'
+  ],
+
+  blue:[
+    '#4d8da8',
+    '#ed7972',
+    '#fefeff',
+    '#4f7181',
+    '#c4dfea',
+    '#eaf4f9'
+  ],
+
+  light:[
+    '#609bc5',
+    '#78aeda',
+    '#ffffff',
+    '#355675',
+    '#bdd5e5',
+    '#eef5fa'
+  ]
+};
+
+
+window.setRuleIndexTheme = function(name){
+
+  const t = themes[name] || themes.pastel;
+
+  document.documentElement.style.colorScheme = name === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = name;
+
+  [
+    '--theme',
+    '--accent',
+    '--paper',
+    '--ink',
+    '--line',
+    '--soft'
+  ].forEach((key,index)=>{
+    document.documentElement.style.setProperty(
+      key,
+      t[index]
+    );
+  });
+
+};
+
+
+/* 기존 메모장 테마 호출 방식과도 호환 */
+window.setNotepadTheme = window.setRuleIndexTheme;
+
+
+window.setRuleIndexTheme(
+  new URLSearchParams(location.search).get('theme')
+  || 'pastel'
+);
+
+
+/* =========================================================
+   저장 데이터
+   ========================================================= */
+
+const STORE =
+  'trpg-organizer-rule-index-v1';
+
+
+function uid(){
+
+  return (
+    Date.now().toString(36)
+    + Math.random().toString(36).slice(2,8)
+  );
+
+}
+
+
+function emptyState(){
+
+  return {
+    version:1,
+    categories:[],
+    activeCategoryId:null,
+    activeTabId:null
+  };
+
+}
+
+
+function load(){
+
+  try{
+
+    const parsed =
+      JSON.parse(localStorage.getItem(STORE));
+
+    if(
+      !parsed
+      || !Array.isArray(parsed.categories)
+    ){
+      return emptyState();
+    }
+
+    return parsed;
+
+  }catch{
+
+    return emptyState();
+
+  }
+
+}
+
+
+let data = load();
+
+
+function save(){
+
+  try{
+
+    localStorage.setItem(
+      STORE,
+      JSON.stringify(data)
+    );
+
+    flashSaved();
+
+  }catch{}
+
+}
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const categoryList =
+  document.getElementById('category-list');
+
+const tabbar =
+  document.getElementById('tabbar');
+
+const addTabButton =
+  document.getElementById('add-tab');
+
+const editor =
+  document.getElementById('editor');
+
+const editorWrap =
+  document.getElementById('editor-wrap');
+
+const empty =
+  document.getElementById('empty');
+
+const status =
+  document.getElementById('status');
+
+const popup =
+  document.getElementById('category-popup');
+
+let popupCategoryId = null;
+
+
+/* =========================================================
+   현재 항목
+   ========================================================= */
+
+function currentCategory(){
+
+  return data.categories.find(
+    c => c.id === data.activeCategoryId
+  ) || null;
+
+}
+
+
+function currentTab(){
+
+  const category = currentCategory();
+
+  if(!category) return null;
+
+  return category.tabs.find(
+    tab => tab.id === data.activeTabId
+  ) || null;
+
+}
+
+
+function ensureSelection(){
+
+  if(!data.categories.length){
+
+    data.activeCategoryId = null;
+    data.activeTabId = null;
+
+    return;
+
+  }
+
+
+  let category = currentCategory();
+
+  if(!category){
+
+    category = data.categories[0];
+
+    data.activeCategoryId =
+      category.id;
+
+  }
+
+
+  if(
+    !Array.isArray(category.tabs)
+  ){
+    category.tabs = [];
+  }
+
+
+  if(!category.tabs.length){
+
+    data.activeTabId = null;
+
+    return;
+
+  }
+
+
+  if(
+    !category.tabs.some(
+      tab => tab.id === data.activeTabId
+    )
+  ){
+
+    data.activeTabId =
+      category.tabs[0].id;
+
+  }
+
+}
+
+
+/* =========================================================
+   자동 저장
+   ========================================================= */
+
+let saveTimer = null;
+
+
+function flashSaved(){
+
+  status.textContent =
+    '저장됨';
+
+  clearTimeout(
+    status._timer
+  );
+
+  status._timer =
+    setTimeout(()=>{
+      status.textContent =
+        '자동 저장';
+    },900);
+
+}
+
+
+function saveEditor(){
+
+  const tab =
+    currentTab();
+
+  if(!tab) return;
+
+  tab.html =
+    editor.innerHTML;
+
+  clearTimeout(saveTimer);
+
+  saveTimer =
+    setTimeout(save,120);
+
+}
+
+
+editor.addEventListener(
+  'input',
+  saveEditor
+);
+
+
+/* =========================================================
+   렌더링
+   ========================================================= */
+
+function render(){
+
+  ensureSelection();
+
+  renderCategories();
+  renderTabs();
+  renderEditor();
+
+}
+
+
+function renderCategories(){
+
+  categoryList.replaceChildren();
+
+  if(categoryCreateOpen){
+
+    const createRow =
+      document.createElement('div');
+
+    createRow.className =
+      'category-create-row';
+
+    const input =
+      document.createElement('input');
+
+    input.type = 'text';
+    input.id = 'category-create-input';
+    input.maxLength = 60;
+    input.setAttribute(
+      'aria-label',
+      '새 룰북 이름'
+    );
+
+    input.addEventListener(
+      'keydown',
+      event=>{
+        if(event.key === 'Enter'){
+          event.preventDefault();
+          commitCategoryCreate();
+        }else if(event.key === 'Escape'){
+          event.preventDefault();
+          closeCategoryCreate();
+        }
+      }
+    );
+
+    createRow.append(input);
+    categoryList.append(createRow);
+
+    requestAnimationFrame(()=>{
+      input.focus();
+    });
+
+  }
+
+
+  data.categories.forEach(category=>{
+
+    const row =
+      document.createElement('div');
+
+    row.className =
+      'category'
+      + (
+        category.id === data.activeCategoryId
+        ? ' active'
+        : ''
+      );
+
+    if(category.id === renamingCategoryId){
+
+      const renameInput =
+        document.createElement('input');
+
+      renameInput.type = 'text';
+      renameInput.className = 'category-rename-input';
+      renameInput.maxLength = 60;
+      renameInput.value = category.name || '';
+      renameInput.setAttribute('aria-label','룰북 이름 변경');
+
+      const commitRename = ()=>{
+        const nextName = renameInput.value.trim();
+        if(!nextName){
+          renameInput.focus();
+          return;
+        }
+        category.name = nextName;
+        renamingCategoryId = null;
+        save();
+        renderCategories();
+      };
+
+      renameInput.addEventListener('keydown',event=>{
+        if(event.key === 'Enter'){
+          event.preventDefault();
+          commitRename();
+        }else if(event.key === 'Escape'){
+          event.preventDefault();
+          renamingCategoryId = null;
+          renderCategories();
+        }
+      });
+
+      renameInput.addEventListener('blur',()=>{
+        if(renamingCategoryId === category.id){
+          commitRename();
+        }
+      });
+
+      row.append(renameInput);
+      categoryList.append(row);
+
+      requestAnimationFrame(()=>{
+        renameInput.focus();
+        renameInput.select();
+      });
+
+      return;
+    }
+
+
+    const main =
+      document.createElement('button');
+
+    main.type = 'button';
+    main.className = 'category-main';
+
+    main.textContent =
+      category.name || '이름 없음';
+
+    main.title =
+      category.name || '이름 없음';
+
+
+    main.addEventListener(
+      'click',
+      ()=>{
+
+        saveEditor();
+
+        data.activeCategoryId =
+          category.id;
+
+        data.activeTabId =
+          category.tabs?.[0]?.id || null;
+
+        save();
+        render();
+
+      }
+    );
+
+
+    main.addEventListener(
+      'dblclick',
+      ()=>renameCategory(category.id)
+    );
+
+
+    const menu =
+      document.createElement('button');
+
+    menu.type = 'button';
+    menu.className =
+      'category-menu';
+
+    menu.innerHTML = '<i class="ph ph-dots-three-vertical" aria-hidden="true"></i>';
+
+    menu.setAttribute(
+      'aria-label',
+      '룰북 메뉴'
+    );
+
+
+    menu.addEventListener(
+      'click',
+      event=>{
+
+        event.stopPropagation();
+
+        openCategoryPopup(
+          category.id,
+          menu
+        );
+
+      }
+    );
+
+
+    row.append(
+      main,
+      menu
+    );
+
+    categoryList.append(row);
+
+  });
+
+}
+
+
+function renderTabs(){
+
+  tabbar
+    .querySelectorAll('.tab, .tab-create')
+    .forEach(el=>el.remove());
+
+
+  const category =
+    currentCategory();
+
+
+  if(!category){
+
+    addTabButton.style.display =
+      'none';
+
+    return;
+
+  }
+
+
+  addTabButton.style.display = '';
+
+  if(tabCreateOpen){
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'tab-create';
+    input.maxLength = 60;
+    input.placeholder = '탭 이름';
+    input.setAttribute('aria-label','새 탭 이름');
+
+    input.addEventListener('keydown', event=>{
+      if(event.key === 'Enter'){
+        event.preventDefault();
+        commitTabCreate(input.value);
+      }else if(event.key === 'Escape'){
+        event.preventDefault();
+        tabCreateOpen = false;
+        renderTabs();
+      }
+    });
+
+    tabbar.insertBefore(input, addTabButton);
+    requestAnimationFrame(()=>input.focus());
+  }
+
+
+  category.tabs.forEach(tab=>{
+
+    const item =
+      document.createElement('div');
+
+    item.className =
+      'tab'
+      + (
+        tab.id === data.activeTabId
+        ? ' active'
+        : ''
+      );
+
+
+    const name =
+      document.createElement('button');
+
+    name.type = 'button';
+    name.className =
+      'tab-name';
+
+    name.textContent =
+      tab.name || '이름 없음';
+
+    name.title =
+      '더블 클릭: 이름 변경';
+
+
+    name.addEventListener(
+      'click',
+      ()=>{
+
+        saveEditor();
+
+        data.activeTabId =
+          tab.id;
+
+        save();
+        render();
+
+      }
+    );
+
+
+    name.addEventListener(
+      'dblclick',
+      event=>{
+
+        event.stopPropagation();
+
+        renameTab(tab.id);
+
+      }
+    );
+
+
+    const close =
+      document.createElement('button');
+
+    close.type = 'button';
+    close.className =
+      'tab-close';
+
+    close.textContent = '×';
+
+    close.title =
+      '탭 삭제';
+
+
+    close.addEventListener(
+      'click',
+      event=>{
+
+        event.stopPropagation();
+
+        deleteTab(tab.id);
+
+      }
+    );
+
+
+    item.append(
+      name,
+      close
+    );
+
+
+    tabbar.insertBefore(
+      item,
+      addTabButton
+    );
+
+  });
+
+}
+
+
+function renderEditor(){
+
+  const category =
+    currentCategory();
+
+  const tab =
+    currentTab();
+
+
+  if(!category){
+
+    empty.textContent =
+      '룰 요약 옆의 + 버튼을 눌러 룰북을 추가해 주세요.';
+
+    empty.classList.add('show');
+
+    editorWrap.classList.add(
+      'hidden'
+    );
+
+    return;
+
+  }
+
+
+  if(!tab){
+
+    empty.textContent =
+      '상단의 ＋ 버튼을 눌러 룰 탭을 만들어 주세요.';
+
+    empty.classList.add('show');
+
+    editorWrap.classList.add(
+      'hidden'
+    );
+
+    return;
+
+  }
+
+
+  empty.classList.remove('show');
+
+  editorWrap.classList.remove(
+    'hidden'
+  );
+
+
+  editor.innerHTML =
+    tab.html || '';
+
+}
+
+
+/* =========================================================
+   룰북
+   ========================================================= */
+
+let categoryCreateOpen = false;
+let tabCreateOpen = false;
+let renamingCategoryId = null;
+
+function openCategoryCreate(){
+
+  categoryCreateOpen = true;
+  renderCategories();
+
+}
+
+function closeCategoryCreate(){
+
+  categoryCreateOpen = false;
+  renderCategories();
+
+}
+
+function commitCategoryCreate(){
+
+  const input =
+    document.getElementById('category-create-input');
+
+  const name =
+    input?.value.trim() || '';
+
+  if(!name){
+    input?.focus();
+    return;
+  }
+
+  saveEditor();
+
+  const category = {
+    id:uid(),
+    name,
+    tabs:[]
+  };
+
+  data.categories.push(category);
+  data.activeCategoryId = category.id;
+  data.activeTabId = null;
+  categoryCreateOpen = false;
+
+  save();
+  render();
+
+}
+
+document
+  .getElementById('add-category')
+  .addEventListener(
+    'click',
+    ()=>{
+      if(categoryCreateOpen){
+        closeCategoryCreate();
+      }else{
+        openCategoryCreate();
+      }
+    }
+  );
+
+function renameCategory(id){
+
+  const category =
+    data.categories.find(
+      c => c.id === id
+    );
+
+  if(!category) return;
+
+  renamingCategoryId = id;
+  renderCategories();
+
+}
+
+
+function deleteCategory(id){
+
+  const category =
+    data.categories.find(
+      c => c.id === id
+    );
+
+  if(!category) return;
+
+
+  const ok =
+    confirm(
+      `"${category.name}" 룰북을 삭제할까요?\n`
+      + '룰북 안의 모든 탭도 함께 삭제됩니다.'
+    );
+
+  if(!ok) return;
+
+
+  saveEditor();
+
+
+  const index =
+    data.categories.findIndex(
+      c => c.id === id
+    );
+
+
+  data.categories.splice(
+    index,
+    1
+  );
+
+
+  if(
+    data.activeCategoryId === id
+  ){
+
+    const next =
+      data.categories[
+        Math.min(
+          index,
+          data.categories.length - 1
+        )
+      ] || null;
+
+    data.activeCategoryId =
+      next?.id || null;
+
+    data.activeTabId =
+      next?.tabs?.[0]?.id || null;
+
+  }
+
+
+  save();
+  render();
+
+}
+
+
+/* =========================================================
+   룰북 메뉴
+   ========================================================= */
+
+function openCategoryPopup(
+  id,
+  anchor
+){
+
+  popupCategoryId = id;
+
+  const rect =
+    anchor.getBoundingClientRect();
+
+  popup.style.left =
+    Math.min(
+      rect.left,
+      innerWidth - 120
+    )
+    + 'px';
+
+  popup.style.top =
+    Math.min(
+      rect.bottom + 3,
+      innerHeight - 80
+    )
+    + 'px';
+
+  popup.classList.add(
+    'open'
+  );
+
+}
+
+
+function closePopup(){
+
+  popup.classList.remove(
+    'open'
+  );
+
+  popupCategoryId = null;
+
+}
+
+
+document
+  .getElementById('rename-category')
+  .addEventListener(
+    'click',
+    ()=>{
+
+      const id =
+        popupCategoryId;
+
+      closePopup();
+
+      if(id)
+        renameCategory(id);
+
+    }
+  );
+
+
+document
+  .getElementById('delete-category')
+  .addEventListener(
+    'click',
+    ()=>{
+
+      const id =
+        popupCategoryId;
+
+      closePopup();
+
+      if(id)
+        deleteCategory(id);
+
+    }
+  );
+
+
+document.addEventListener(
+  'pointerdown',
+  event=>{
+
+    if(
+      !popup.contains(event.target)
+      && !event.target.closest(
+        '.category-menu'
+      )
+    ){
+      closePopup();
+    }
+
+  }
+);
+
+
+/* =========================================================
+   탭
+   ========================================================= */
+
+function commitTabCreate(value){
+
+  const category = currentCategory();
+  if(!category) return;
+
+  const name = String(value || '').trim();
+  if(!name) return;
+
+  saveEditor();
+
+  const tab = {
+    id:uid(),
+    name,
+    html:''
+  };
+
+  category.tabs.push(tab);
+  data.activeTabId = tab.id;
+  tabCreateOpen = false;
+
+  save();
+  render();
+
+  requestAnimationFrame(()=>editor.focus());
+}
+
+addTabButton.addEventListener(
+  'click',
+  ()=>{
+    const category = currentCategory();
+    if(!category) return;
+    tabCreateOpen = !tabCreateOpen;
+    renderTabs();
+  }
+);
+
+function renameTab(id){
+
+  const category =
+    currentCategory();
+
+  if(!category) return;
+
+
+  const tab =
+    category.tabs.find(
+      t => t.id === id
+    );
+
+  if(!tab) return;
+
+
+  const name =
+    prompt(
+      '탭 이름을 변경하세요.',
+      tab.name
+    );
+
+
+  if(
+    name === null
+    || !name.trim()
+  ) return;
+
+
+  tab.name =
+    name.trim();
+
+  save();
+  render();
+
+}
+
+
+function deleteTab(id){
+
+  const category =
+    currentCategory();
+
+  if(!category) return;
+
+
+  const tab =
+    category.tabs.find(
+      t => t.id === id
+    );
+
+  if(!tab) return;
+
+
+  if(
+    !confirm(
+      `"${tab.name}" 탭을 삭제할까요?`
+    )
+  ){
+    return;
+  }
+
+
+  saveEditor();
+
+
+  const index =
+    category.tabs.findIndex(
+      t => t.id === id
+    );
+
+
+  category.tabs.splice(
+    index,
+    1
+  );
+
+
+  if(
+    data.activeTabId === id
+  ){
+
+    data.activeTabId =
+      category.tabs[
+        Math.min(
+          index,
+          category.tabs.length - 1
+        )
+      ]?.id || null;
+
+  }
+
+
+  save();
+  render();
+
+}
+
+
+/* =========================================================
+   서식
+   ========================================================= */
+
+let savedRange = null;
+
+
+function rememberRange(){
+
+  const selection =
+    getSelection();
+
+  if(
+    selection
+    && selection.rangeCount
+    && editor.contains(
+      selection.anchorNode
+    )
+  ){
+
+    savedRange =
+      selection
+        .getRangeAt(0)
+        .cloneRange();
+
+  }
+
+}
+
+
+function restoreRange(){
+
+  if(!savedRange) return;
+
+  const selection =
+    getSelection();
+
+  selection.removeAllRanges();
+  selection.addRange(
+    savedRange
+  );
+
+}
+
+
+editor.addEventListener(
+  'keyup',
+  rememberRange
+);
+
+editor.addEventListener(
+  'mouseup',
+  rememberRange
+);
+
+
+document
+  .querySelectorAll(
+    '[data-command]'
+  )
+  .forEach(button=>{
+
+    button.addEventListener(
+      'mousedown',
+      event=>{
+
+        event.preventDefault();
+
+        rememberRange();
+
+        document.execCommand(
+          button.dataset.command,
+          false,
+          null
+        );
+
+        saveEditor();
+        editor.focus();
+
+      }
+    );
+
+  });
+
+
+
+
+const foreColor =
+  document.getElementById('fore-color');
+
+const foreColorWrap =
+  document.getElementById('fore-color-wrap');
+
+foreColor.addEventListener(
+  'mousedown',
+  ()=>rememberRange()
+);
+
+function selectedListItems(range){
+  if(!range) return [];
+
+  return [...editor.querySelectorAll('li')].filter(item=>{
+    try{
+      return range.intersectsNode(item);
+    }catch{
+      return false;
+    }
+  });
+}
+
+foreColor.addEventListener(
+  'input',
+  ()=>{
+    foreColorWrap?.style.setProperty('--picked-color',foreColor.value);
+    restoreRange();
+
+    const range = savedRange
+      ? savedRange.cloneRange()
+      : null;
+
+    const listItems = selectedListItems(range);
+
+    document.execCommand(
+      'foreColor',
+      false,
+      foreColor.value
+    );
+
+    /* 목록 글자색을 바꾸면 글머리/번호 색도 함께 변경 */
+    listItems.forEach(item=>{
+      item.style.color = foreColor.value;
+    });
+
+    rememberRange();
+    saveEditor();
+    editor.focus();
+  }
+);
+
+
+const formatPanels =
+  [...document.querySelectorAll('.tool-panel')];
+
+const formatPanelPairs = [
+  ['heading','heading-panel'],
+  ['list','list-panel']
+];
+
+function positionFormatPanel(button,panel){
+  const host = document.querySelector('.content-area');
+  const hostRect = host.getBoundingClientRect();
+  const buttonRect = button.getBoundingClientRect();
+  const width = panel.offsetWidth || 186;
+  const maxLeft = Math.max(8,hostRect.width - width - 8);
+  const left = Math.max(8,Math.min(maxLeft,buttonRect.left - hostRect.left));
+  panel.style.left = `${left}px`;
+}
+
+function closeFormatPanels(except=null){
+  formatPanels.forEach(panel=>{
+    if(panel !== except){
+      panel.classList.remove('open');
+    }
+  });
+}
+
+formatPanelPairs.forEach(([buttonId,panelId])=>{
+  const button = document.getElementById(buttonId);
+  const panel = document.getElementById(panelId);
+
+  button.addEventListener('mousedown',event=>{
+    event.preventDefault();
+    rememberRange();
+    const opening = !panel.classList.contains('open');
+    closeFormatPanels(panel);
+    panel.classList.toggle('open',opening);
+    if(opening) positionFormatPanel(button,panel);
+  });
+});
+
+window.addEventListener('resize',()=>{
+  formatPanelPairs.forEach(([buttonId,panelId])=>{
+    const button = document.getElementById(buttonId);
+    const panel = document.getElementById(panelId);
+    if(panel.classList.contains('open')) positionFormatPanel(button,panel);
+  });
+});
+
+document
+  .querySelectorAll('[data-block]')
+  .forEach(button=>button.addEventListener('mousedown',event=>{
+    event.preventDefault();
+    restoreRange();
+    document.execCommand('formatBlock',false,button.dataset.block);
+    closeFormatPanels();
+    saveEditor();
+    editor.focus();
+  }));
+
+document
+  .querySelectorAll('[data-list]')
+  .forEach(button=>button.addEventListener('mousedown',event=>{
+    event.preventDefault();
+    restoreRange();
+    document.execCommand(button.dataset.list,false,null);
+    closeFormatPanels();
+    saveEditor();
+    editor.focus();
+  }));
+
+document.addEventListener('mousedown',event=>{
+  if(
+    !event.target.closest('.tool-panel')
+    && !event.target.closest('#heading,#list')
+  ){
+    closeFormatPanels();
+  }
+});
+
+
+const ruleSearchInput =
+  document.getElementById('rule-search-input');
+
+const ruleSearchButton =
+  document.getElementById('rule-search-button');
+
+let lastSearchQuery = '';
+let lastSearchStart = 0;
+
+function editorTextNodes(){
+  const walker = document.createTreeWalker(
+    editor,
+    NodeFilter.SHOW_TEXT
+  );
+
+  const nodes = [];
+  let node;
+
+  while((node = walker.nextNode())){
+    nodes.push(node);
+  }
+
+  return nodes;
+}
+
+function searchRuleSummary(){
+  const query = ruleSearchInput.value.trim();
+  if(!query) return;
+
+  const nodes = editorTextNodes();
+  const fullText = nodes.map(node=>node.nodeValue || '').join('');
+  const haystack = fullText.toLocaleLowerCase();
+  const needle = query.toLocaleLowerCase();
+
+  if(query !== lastSearchQuery){
+    lastSearchQuery = query;
+    lastSearchStart = 0;
+  }
+
+  let index = haystack.indexOf(needle,lastSearchStart);
+  if(index < 0 && lastSearchStart > 0){
+    index = haystack.indexOf(needle,0);
+  }
+  if(index < 0) return;
+
+  const endIndex = index + query.length;
+  let offset = 0;
+  let startNode = null;
+  let startOffset = 0;
+  let endNode = null;
+  let endOffset = 0;
+
+  for(const node of nodes){
+    const length = (node.nodeValue || '').length;
+
+    if(!startNode && index >= offset && index <= offset + length){
+      startNode = node;
+      startOffset = Math.max(0,index - offset);
+    }
+
+    if(endIndex >= offset && endIndex <= offset + length){
+      endNode = node;
+      endOffset = Math.max(0,endIndex - offset);
+      break;
+    }
+
+    offset += length;
+  }
+
+  if(!startNode || !endNode) return;
+
+  const range = document.createRange();
+  range.setStart(startNode,startOffset);
+  range.setEnd(endNode,endOffset);
+
+  const selection = getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+
+  savedRange = range.cloneRange();
+  lastSearchStart = endIndex;
+
+  const focusElement = startNode.parentElement;
+  focusElement?.scrollIntoView({block:'center',inline:'nearest'});
+}
+
+ruleSearchInput.addEventListener('keydown',event=>{
+  if(event.key === 'Enter'){
+    event.preventDefault();
+    searchRuleSummary();
+  }
+});
+
+ruleSearchInput.addEventListener('input',()=>{
+  lastSearchQuery = '';
+  lastSearchStart = 0;
+});
+
+ruleSearchButton.addEventListener('mousedown',event=>{
+  event.preventDefault();
+});
+
+ruleSearchButton.addEventListener('click',()=>{
+  searchRuleSummary();
+});
+
+
+document
+  .getElementById('table')
+  .addEventListener(
+    'mousedown',
+    event=>{
+
+      event.preventDefault();
+
+      rememberRange();
+
+
+      const rowValue =
+        prompt(
+          '표의 행 수를 입력하세요.',
+          '2'
+        );
+
+      if(rowValue === null) return;
+
+
+      const colValue =
+        prompt(
+          '표의 열 수를 입력하세요.',
+          '2'
+        );
+
+      if(colValue === null) return;
+
+
+      const rows =
+        Math.max(
+          1,
+          Math.min(
+            10,
+            Number(rowValue) || 1
+          )
+        );
+
+      const cols =
+        Math.max(
+          1,
+          Math.min(
+            10,
+            Number(colValue) || 1
+          )
+        );
+
+
+      restoreRange();
+
+
+      const cells =
+        '<td><br></td>'.repeat(
+          cols
+        );
+
+
+      const html =
+        '<table><tbody>'
+        + (
+          `<tr>${cells}</tr>`
+        ).repeat(rows)
+        + '</tbody></table>'
+        + '<p><br></p>';
+
+
+      document.execCommand(
+        'insertHTML',
+        false,
+        html
+      );
+
+
+      saveEditor();
+      editor.focus();
+
+    }
+  );
+
+
+/* =========================================================
+   시작
+   ========================================================= */
+
+ensureSelection();
+render();
+
+
+window.addEventListener(
+  'beforeunload',
+  ()=>{
+    saveEditor();
+    save();
+  }
+);
+</script>
+
+
+<style id="trpg-dark-no-elevation-shadow">
+:root[data-theme="dark"] :is(.tool-panel,.popup){box-shadow:none!important;}
+</style>
+
+</body>
+</html>

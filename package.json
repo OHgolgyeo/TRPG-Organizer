@@ -23,6 +23,7 @@
       "updater.js",
       "index.html",
       "subview-notepad.html",
+      "subview-rule-index.html",
       "assets/**",
       "node_modules/**/*",
       "mac-chat-bridge.js",

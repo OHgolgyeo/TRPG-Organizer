@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('roll20Native', {
   sendToRoll20:  (t) => ipcRenderer.invoke('roll20:send', t),
   saveJson:      (filename, contents) => ipcRenderer.invoke('file:save-json', { filename, contents }),
   openExternal:  (url) => ipcRenderer.invoke('app:open-external', url),
+  writeClipboardText: (text) => ipcRenderer.invoke('clipboard:write-text', String(text ?? '')),
 
   getTargetMode:  ()  => ipcRenderer.invoke('tools:get-mode'),
   setTargetMode:  (m) => ipcRenderer.invoke('tools:set-mode', m),
@@ -20,8 +21,10 @@ contextBridge.exposeInMainWorld('roll20Native', {
   checkUpdate:   ()  => ipcRenderer.invoke('update:check'),
   installUpdate: ()  => ipcRenderer.invoke('update:install'),
 
-  widenWindow:    (d, side) => ipcRenderer.send('win:widen', { delta:d, side }),
+  widenWindow:    (d, side, countDelta=0, minimumWidth=null) => ipcRenderer.send('win:widen', { delta:d, side, countDelta, minimumWidth }),
   resizeWindow:   (options) => ipcRenderer.send('win:resize', options),
+  setMinimumWidth:(width) => ipcRenderer.send('win:min-width', width),
+  moveWindowBy:    (dx, dy) => ipcRenderer.send('win:move-by', { dx, dy }),
   close:          ()  => ipcRenderer.send('win:close'),
   setAlwaysOnTop: (v) => ipcRenderer.send('win:always-on-top', v),
   setOpacity:     (v) => ipcRenderer.send('win:opacity', v),
