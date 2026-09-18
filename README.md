@@ -6,7 +6,7 @@ TRPG 시나리오와 자료를 정리하고 Roll20 또는 CCFOLIA의 채팅 입�
 ## 다운로드
 
 ### Windows
-`TRPG Organizer-Setup-0.1.0.exe`
+`TRPG Organizer-Setup-0.1.n.exe`
 
 ### macOS
 사용 중인 Mac에 맞는 파일을 내려받아 주세요.
