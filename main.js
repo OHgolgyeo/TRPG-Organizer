@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog, nativeTheme, shell, screen, clipboard } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { execFile } = require('child_process');
 const { ChatSender } = require('./chat-sender');
 const { initAutoUpdate, checkForUpdatesManually, getUpdateState, installUpdateNow } = require('./updater');
 
@@ -29,6 +30,108 @@ let isIconCollapsed = false;
 // 같은 창 안에서 본문 -> 코멘트처럼 포커스만 이동할 때는 재요청하지 않아
 // 한/영 상태가 반복 요청 때문에 뒤집히는 문제도 막습니다.
 const koreanImeWindowState = new WeakMap();
+
+// 한/영 키를 "토글"하면 현재 상태가 영문인지 한글인지 알 수 없어 오히려 뒤집힐 수 있습니다.
+// 그래서 Windows에서는 한국어 키보드 레이아웃을 지정한 뒤 IME open/native 상태를 명시적으로
+// 켭니다. Chromium/Electron의 입력 컨텍스트가 늦게 생기는 경우를 고려해 최초 실패는 잠그지 않습니다.
+function forceKoreanImeNative(hwnd) {
+  if (process.platform !== 'win32') return Promise.resolve({ ok: true, skipped: true });
+  const hwndText = String(hwnd);
+  const script = String.raw`
+$ErrorActionPreference='Stop'
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public static class TrpgOrganizerIme {
+  [StructLayout(LayoutKind.Sequential)] public struct RECT { public int Left, Top, Right, Bottom; }
+  [StructLayout(LayoutKind.Sequential)] public struct GUITHREADINFO {
+    public uint cbSize, flags;
+    public IntPtr hwndActive, hwndFocus, hwndCapture, hwndMenuOwner, hwndMoveSize, hwndCaret;
+    public RECT rcCaret;
+  }
+  [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
+  [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+  [DllImport("user32.dll")] public static extern bool GetGUIThreadInfo(uint idThread, ref GUITHREADINFO info);
+  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr LoadKeyboardLayout(string id, uint flags);
+  [DllImport("user32.dll")] public static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+  [DllImport("user32.dll")] public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+  [DllImport("imm32.dll")] public static extern IntPtr ImmGetContext(IntPtr hWnd);
+  [DllImport("imm32.dll")] public static extern bool ImmGetOpenStatus(IntPtr hIMC);
+  [DllImport("imm32.dll")] public static extern bool ImmSetOpenStatus(IntPtr hIMC, bool open);
+  [DllImport("imm32.dll")] public static extern bool ImmGetConversionStatus(IntPtr hIMC, out uint conversion, out uint sentence);
+  [DllImport("imm32.dll")] public static extern bool ImmSetConversionStatus(IntPtr hIMC, uint conversion, uint sentence);
+  [DllImport("imm32.dll")] public static extern bool ImmReleaseContext(IntPtr hWnd, IntPtr hIMC);
+  [DllImport("imm32.dll")] public static extern IntPtr ImmGetDefaultIMEWnd(IntPtr hWnd);
+}
+'@
+$window=[IntPtr][int64]'${hwndText}'
+if ($window -eq [IntPtr]::Zero) { throw 'window-unavailable' }
+[void][TrpgOrganizerIme]::SetForegroundWindow($window)
+Start-Sleep -Milliseconds 90
+$pidValue=[uint32]0
+$thread=[TrpgOrganizerIme]::GetWindowThreadProcessId($window,[ref]$pidValue)
+$focus=$window
+if ($thread -ne 0) {
+  $gui=New-Object TrpgOrganizerIme+GUITHREADINFO
+  $gui.cbSize=[Runtime.InteropServices.Marshal]::SizeOf([type][TrpgOrganizerIme+GUITHREADINFO])
+  if ([TrpgOrganizerIme]::GetGUIThreadInfo($thread,[ref]$gui) -and $gui.hwndFocus -ne [IntPtr]::Zero) {
+    $focus=$gui.hwndFocus
+  }
+}
+$layout=[TrpgOrganizerIme]::LoadKeyboardLayout('00000412',1)
+if ($layout -eq [IntPtr]::Zero) { throw 'korean-layout-unavailable' }
+[void][TrpgOrganizerIme]::PostMessage($focus,0x0050,[IntPtr]::Zero,$layout)
+Start-Sleep -Milliseconds 90
+$applied=$false
+$ctx=[TrpgOrganizerIme]::ImmGetContext($focus)
+if ($ctx -ne [IntPtr]::Zero) {
+  try {
+    if (-not [TrpgOrganizerIme]::ImmGetOpenStatus($ctx)) {
+      [void][TrpgOrganizerIme]::ImmSetOpenStatus($ctx,$true)
+    }
+    $conversion=[uint32]0; $sentence=[uint32]0
+    if ([TrpgOrganizerIme]::ImmGetConversionStatus($ctx,[ref]$conversion,[ref]$sentence)) {
+      $conversion=$conversion -bor 0x0001
+      [void][TrpgOrganizerIme]::ImmSetConversionStatus($ctx,$conversion,$sentence)
+    }
+    $applied=$true
+  } finally {
+    [void][TrpgOrganizerIme]::ImmReleaseContext($focus,$ctx)
+  }
+}
+if (-not $applied) {
+  $ime=[TrpgOrganizerIme]::ImmGetDefaultIMEWnd($focus)
+  if ($ime -ne [IntPtr]::Zero) {
+    # WM_IME_CONTROL / IMC_SETOPENSTATUS = 명시적으로 IME ON
+    [void][TrpgOrganizerIme]::SendMessage($ime,0x0283,[IntPtr]0x0006,[IntPtr]1)
+    # IMC_GET/SETCONVERSIONMODE, IME_CMODE_NATIVE = 한글 변환 모드
+    $mode=[int64][TrpgOrganizerIme]::SendMessage($ime,0x0283,[IntPtr]0x0001,[IntPtr]::Zero)
+    [void][TrpgOrganizerIme]::SendMessage($ime,0x0283,[IntPtr]0x0002,[IntPtr]($mode -bor 0x0001))
+    $applied=$true
+  }
+}
+if (-not $applied) { throw 'ime-context-unavailable' }
+Write-Output '{"ok":true}'
+`;
+  return new Promise((resolve) => {
+    execFile('powershell.exe', [
+      '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', script,
+    ], { windowsHide: true, timeout: 5000, maxBuffer: 64 * 1024 }, (error, stdout, stderr) => {
+      if (error) {
+        resolve({ ok: false, error: 'korean-ime-failed', detail: String(stderr || error.message || error).trim() });
+        return;
+      }
+      try {
+        const line = String(stdout || '').trim().split(/\r?\n/).filter(Boolean).pop();
+        const parsed = line ? JSON.parse(line) : { ok: true };
+        resolve(parsed?.ok === false ? parsed : { ok: true });
+      } catch {
+        resolve({ ok: true });
+      }
+    });
+  });
+}
+
 async function requestKoreanImeForWindow(targetWindow) {
   if (process.platform !== 'win32') return { ok: true, skipped: true };
   if (!targetWindow || targetWindow.isDestroyed()) return { ok: false, error: 'window-unavailable' };
@@ -41,12 +144,12 @@ async function requestKoreanImeForWindow(targetWindow) {
   }
   if (state.promise) return state.promise;
   if (state.primed) return { ok: true, skipped: true, reason: 'window-already-primed' };
-  if (now - state.requestedAt < 1200) return { ok: true, skipped: true, reason: 'debounced' };
+  if (now - state.requestedAt < 500) return { ok: true, skipped: true, reason: 'debounced' };
 
   state.requestedAt = now;
   const handle = targetWindow.getNativeWindowHandle();
   const hwnd = handle.length === 8 ? handle.readBigUInt64LE(0) : BigInt(handle.readUInt32LE(0));
-  state.promise = Promise.resolve(sender.preferKorean(hwnd))
+  state.promise = forceKoreanImeNative(hwnd)
     .then(result => {
       // 실패한 경우에는 다음 포커스 때 다시 시도할 수 있도록 primed로 잠그지 않습니다.
       state.primed = result?.ok !== false;
@@ -54,7 +157,7 @@ async function requestKoreanImeForWindow(targetWindow) {
     })
     .catch(error => {
       state.primed = false;
-      throw error;
+      return { ok: false, error: 'korean-ime-failed', detail: error?.message || String(error) };
     })
     .finally(() => { state.promise = null; });
   return state.promise;
@@ -114,10 +217,9 @@ function createWindow() {
     minHeight: 44,
     frame: false,
     autoHideMenuBar: true,
-    // frameless 창의 Windows 네이티브 resize border와 커스텀 서브뷰 resize가
-    // 서로 다른 레이어처럼 경쟁하지 않도록 사용자 네이티브 리사이즈는 끕니다.
-    // 창 크기 변경은 index.html의 커스텀 핸들 -> win:resize IPC로 계속 가능합니다.
-    resizable: false,
+    // Windows가 frameless 창의 가장자리에서 리사이즈 커서를 표시하면 실제 크기
+    // 조절도 가능해야 합니다. 커스텀 핸들은 서브뷰 폭 연동용으로 계속 사용합니다.
+    resizable: true,
     roundedCorners: true,
     transparent: true,
     backgroundColor: '#00000000',
@@ -130,6 +232,23 @@ function createWindow() {
       spellcheck: false,
       webviewTag: true,        // 서브뷰(<webview>)용
     },
+  });
+
+  win.webContents.on('will-attach-webview', (event, webPreferences, params) => {
+    let protocol = '';
+    try { protocol = new URL(params.src).protocol; } catch {}
+    if (!['http:', 'https:', 'file:'].includes(protocol)) {
+      event.preventDefault();
+      console.warn('[webview] blocked unsupported URL protocol:', params.src || '(empty)');
+      return;
+    }
+
+    // 서브뷰의 기존 http/https 및 내장 file 기능은 유지하되, 게스트가 Node 권한이나
+    // 임의 preload를 넘겨받지 못하도록 Electron 권장 격리 설정을 강제합니다.
+    delete webPreferences.preload;
+    webPreferences.nodeIntegration = false;
+    webPreferences.contextIsolation = true;
+    webPreferences.sandbox = true;
   });
 
   win.loadFile('index.html');
@@ -178,7 +297,7 @@ function createWindow() {
       `).catch(() => {});
       // renderer의 focusin 요청이 놓쳐도 창 포커스가 완전히 정착한 뒤 한 번 보강합니다.
       // 창별 상태를 공유하므로 renderer 요청이 이미 성공했다면 자동으로 건너뜁니다.
-      primeKoreanImeAfterFocus(win, 180);
+      primeKoreanImeAfterFocus(win, 420);
     }, 650);
   });
 
@@ -264,7 +383,7 @@ function createWindow() {
       syncWithMain();
       child.moveTop();
       child.focus();
-      primeKoreanImeAfterFocus(child, 160);
+      primeKoreanImeAfterFocus(child, 320);
     };
 
     if (child.isVisible()) { applyChildShape(); activate(); }
@@ -447,9 +566,9 @@ ipcMain.handle('file:save-json', async (_e, payload = {}) => {
   if (!/\.json$/i.test(filename)) filename += '.json';
   filename = path.basename(filename);
   const result = await dialog.showSaveDialog(win, {
-    title: 'Roll20 Organizer 저장',
+    title: 'TRPG Organizer 저장',
     defaultPath: filename,
-    filters: [{ name: 'Roll20 Organizer 파일', extensions: ['json'] }],
+    filters: [{ name: 'TRPG Organizer 파일', extensions: ['json'] }],
   });
   if (result.canceled || !result.filePath) return { ok: false, canceled: true, filename };
   try {
