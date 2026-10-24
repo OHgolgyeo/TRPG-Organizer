@@ -32,7 +32,7 @@
     "win": {
       "target": "nsis",
       "icon": "assets/cherries.ico",
-      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "artifactName": "TRPG-Organizer-Setup-${version}.${ext}",
       "extraResources": [
         "win-bridge.ps1"
       ]
@@ -69,7 +69,7 @@
       "category": "public.app-category.utilities",
       "identity": null,
       "hardenedRuntime": false,
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "artifactName": "TRPG-Organizer-${version}-${arch}.${ext}"
     }
   },
   "repository": {
